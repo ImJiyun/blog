@@ -8,6 +8,9 @@
 # working docs for building this project, not part of the shipped repo
 .notes/
 
+# superpowers subagent-driven-development scratch (ledgers, briefs, reports)
+.superpowers/
+
 # Python
 __pycache__/
 *.pyc
