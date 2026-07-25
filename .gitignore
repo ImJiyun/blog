@@ -1,0 +1,28 @@
+# Claude Code local settings
+.claude/
+
+# bkit plugin local runtime state
+.bkit/
+
+# Local-only design/planning notes (brainstorming specs, implementation plans) —
+# working docs for building this project, not part of the shipped repo
+.notes/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Env files
+.env
+.env.local
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# OS
+.DS_Store
