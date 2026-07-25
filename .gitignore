@@ -1,5 +1,6 @@
-# Claude Code local settings
-.claude/
+# Claude Code local-only settings (project-wide .claude/settings.json is committed)
+.claude/settings.local.json
+.claude/worktrees/
 
 # bkit plugin local runtime state
 .bkit/
