@@ -1,0 +1,102 @@
+:root {
+  --bg: #ffffff;
+  --card-bg: #f2f2ef;
+  --ink: #14171a;
+  --ink-soft: #6b7280;
+  --accent: #4898ee;
+  --accent-soft: #dceafb;
+  --border: #e6e6e2;
+
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --text-hero: 2.75rem;
+  --text-h1: 2.25rem;
+  --text-h2: 1.5rem;
+  --text-card-title: 1.15rem;
+  --text-body: 1rem;
+  --text-meta: 0.85rem;
+  --text-mono: 0.8rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101114;
+    --card-bg: #1b1d22;
+    --ink: #f2f2f0;
+    --ink-soft: #9a9ca3;
+    --accent: #6fb0f5;
+    --accent-soft: #223349;
+    --border: #2a2c31;
+  }
+}
+
+/* Manual override hooks for a future theme toggle — no toggle UI exists yet, this
+   just means one can be added later without touching every component's CSS. */
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --card-bg: #1b1d22;
+  --ink: #f2f2f0;
+  --ink-soft: #9a9ca3;
+  --accent: #6fb0f5;
+  --accent-soft: #223349;
+  --border: #2a2c31;
+}
+
+:root[data-theme="light"] {
+  --bg: #ffffff;
+  --card-bg: #f2f2ef;
+  --ink: #14171a;
+  --ink-soft: #6b7280;
+  --accent: #4898ee;
+  --accent-soft: #dceafb;
+  --border: #e6e6e2;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
