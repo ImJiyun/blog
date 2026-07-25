@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "pretendard/dist/web/static/pretendard.css";
 import "./globals.css";
 import { plexMono } from "./fonts";
+import Nav from "@/components/Nav";
 
 export const metadata: Metadata = {
   title: "Data Learning Platform",
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className={plexMono.variable}>
-      <body>{children}</body>
+      <body>
+        <Nav />
+        {children}
+      </body>
     </html>
   );
 }

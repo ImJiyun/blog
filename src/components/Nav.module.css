@@ -1,0 +1,91 @@
+.header {
+  border-bottom: 1px solid var(--border);
+}
+
+.topBar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+
+.githubButton {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.4rem 0.9rem;
+}
+
+.githubButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.hero {
+  text-align: center;
+  padding: 1rem 1.5rem 2.5rem;
+}
+
+.heroTitle {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: var(--text-hero);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.tabNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 1.5rem 1.25rem;
+}
+
+.tabNavSlim {
+  padding: 0.75rem 1.5rem 1.25rem;
+}
+
+.tabList {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tab {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid transparent;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tabActive {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.searchIcon {
+  position: absolute;
+  right: 1.5rem;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon:hover {
+  color: var(--accent);
+}
