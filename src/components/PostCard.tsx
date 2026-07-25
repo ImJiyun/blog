@@ -15,8 +15,10 @@ export default function PostCard({ post }: { post: Post }) {
     <Link href={`/posts/${post.slug}`} className={styles.card} data-testid="post-card">
       <div className={styles.thumbnail}>
         {post.thumbnailUrl ? (
-          // Thumbnails come from an admin-controlled GCS bucket, not user content —
-          // a plain <img> avoids configuring next/image remotePatterns for one bucket.
+          // thumbnailUrl is the first image URL found in the post's markdown body
+          // (extractFirstImageUrl) — an arbitrary external host, not a fixed bucket.
+          // A plain <img> avoids maintaining a next/image remotePatterns allowlist
+          // for hosts we don't control.
           // eslint-disable-next-line @next/next/no-img-element
           <img src={post.thumbnailUrl} alt="" className={styles.thumbnailImage} />
         ) : (
@@ -26,7 +28,6 @@ export default function PostCard({ post }: { post: Post }) {
         )}
       </div>
       <div className={styles.body}>
-        <span className={styles.category}>{post.category}</span>
         <h3 className={styles.title}>{post.title}</h3>
         <div className={styles.meta}>
           <span>{formatDate(post.publishedAt ?? post.createdAt)}</span>
