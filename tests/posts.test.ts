@@ -112,6 +112,50 @@ describe("POST /api/posts", () => {
     expect(titles).toEqual(["발행글"]);
   });
 
+  it("ignores ?status=draft from an unauthenticated caller", async () => {
+    await POST(
+      createRequest({
+        title: "발행글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: [],
+        status: "published",
+      }),
+    );
+    await POST(
+      createRequest({ title: "초안글", bodyMd: "x", category: "SQL", tags: [], status: "draft" }),
+    );
+
+    const response = await GET(
+      new NextRequest("http://localhost/api/posts?status=draft"),
+    );
+    const titles = (await response.json()).map((p: { title: string }) => p.title);
+    expect(titles).toEqual(["발행글"]);
+  });
+
+  it("honors ?status=draft for an authenticated admin", async () => {
+    await POST(
+      createRequest({
+        title: "발행글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: [],
+        status: "published",
+      }),
+    );
+    await POST(
+      createRequest({ title: "초안글", bodyMd: "x", category: "SQL", tags: [], status: "draft" }),
+    );
+
+    const response = await GET(
+      new NextRequest("http://localhost/api/posts?status=draft", {
+        headers: { Cookie: adminCookieHeader() },
+      }),
+    );
+    const titles = (await response.json()).map((p: { title: string }) => p.title);
+    expect(titles).toEqual(["초안글"]);
+  });
+
   it("filters by category and tag", async () => {
     await POST(
       createRequest({

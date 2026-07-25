@@ -20,7 +20,9 @@ export async function GET(request: NextRequest) {
   const category = params.get("category") ?? undefined;
   const tag = params.get("tag") ?? undefined;
   const q = params.get("q") ?? undefined;
-  const status = params.get("status") ?? "published";
+  const requestedStatus = params.get("status") ?? "published";
+  const status =
+    requestedStatus === "published" || isAdmin(request) ? requestedStatus : "published";
 
   const posts = await prisma.post.findMany({
     where: {
