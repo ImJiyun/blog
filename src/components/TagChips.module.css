@@ -1,0 +1,40 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: 960px;
+  margin: 2rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0.35rem 0.75rem;
+  border-radius: 2px;
+}
+
+.chipTag {
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.chipCount {
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+}
+
+.active {
+  border-color: var(--accent);
+}
+
+.active .chipTag,
+.active .chipCount {
+  color: var(--accent);
+}
