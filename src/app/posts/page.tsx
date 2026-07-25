@@ -31,6 +31,7 @@ export default async function PostsPage({
         }}
       >
         {category && <input type="hidden" name="category" value={category} />}
+        {tag && <input type="hidden" name="tag" value={tag} />}
         <input
           type="search"
           name="q"
