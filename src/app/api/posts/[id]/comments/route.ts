@@ -20,7 +20,8 @@ export async function POST(request: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
 
-  const ip = request.headers.get("x-forwarded-for") ?? "unknown";
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  const ip = forwardedFor?.split(",")[0]?.trim() || "unknown";
   if (!checkRateLimit(`comment:${ip}`, 5, 60)) {
     return NextResponse.json(
       { error: "Too many comments, try again later" },
