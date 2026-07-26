@@ -1,0 +1,22 @@
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+}
+
+.title {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: var(--text-h1);
+  color: var(--ink);
+  margin: 0 0 1.5rem;
+}
+
+.paragraph {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: var(--text-body);
+  line-height: 1.8;
+  color: var(--ink);
+  margin: 0 0 1.25rem;
+}
