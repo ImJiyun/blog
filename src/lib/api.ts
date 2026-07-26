@@ -158,3 +158,10 @@ export async function login(password: string): Promise<void> {
     throw new Error(await parseErrorMessage(response, "Login failed"));
   }
 }
+
+export async function deletePost(id: string): Promise<void> {
+  const response = await fetch(`/api/posts/${id}`, { method: "DELETE" });
+  if (!response.ok && response.status !== 204) {
+    throw new Error(await parseErrorMessage(response, "Failed to delete post"));
+  }
+}

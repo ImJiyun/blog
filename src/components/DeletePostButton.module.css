@@ -1,0 +1,13 @@
+.button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+.button:hover {
+  color: #d64545;
+}
