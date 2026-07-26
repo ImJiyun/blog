@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-
 export type PostStatus = "draft" | "published";
 
 export type Post = {
@@ -50,6 +48,7 @@ function getBaseUrl(): string {
 // for a visitor with no `token` cookie, nothing extra is forwarded and drafts
 // 404 as normal.
 async function serverFetch(path: string): Promise<Response> {
+  const { cookies } = await import("next/headers");
   const cookieHeader = (await cookies()).toString();
   return fetch(`${getBaseUrl()}${path}`, {
     cache: "no-store",
@@ -85,7 +84,12 @@ export async function getPosts(params: GetPostsParams = {}): Promise<Post[]> {
 }
 
 export async function getPost(slug: string): Promise<Post | null> {
-  const response = await serverFetch(`/api/posts/${encodeURIComponent(slug)}`);
+  // Next's dynamic route params arrive still percent-encoded for non-ASCII
+  // segments (verified against this Next/Turbopack version) — decode first so
+  // a Korean slug isn't encoded twice, which would 404 against the backend.
+  // decodeURIComponent is a no-op on an already-plain string, so this is safe
+  // regardless of whether params ever start arriving pre-decoded.
+  const response = await serverFetch(`/api/posts/${encodeURIComponent(decodeURIComponent(slug))}`);
   if (response.status === 404) return null;
   if (!response.ok) {
     throw new Error(await parseErrorMessage(response, "Failed to load post"));

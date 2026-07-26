@@ -1,0 +1,23 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin: 2rem 0;
+}
+
+.button:hover {
+  border-color: var(--accent);
+}
+
+.liked {
+  border-color: var(--accent);
+  color: var(--accent);
+}

@@ -1,0 +1,47 @@
+.toc {
+  position: sticky;
+  top: 5rem;
+  width: 200px;
+  align-self: start;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border-left: 1px solid var(--border);
+}
+
+.list li {
+  padding-left: 0.75rem;
+}
+
+.nested {
+  padding-left: 1.5rem;
+}
+
+.link {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  display: block;
+}
+
+.link:hover {
+  color: var(--ink);
+}
+
+.active {
+  color: var(--accent);
+}
+
+@media (max-width: 860px) {
+  .toc {
+    display: none;
+  }
+}
