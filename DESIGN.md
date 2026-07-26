@@ -51,9 +51,13 @@ a background fill. Dark mode follows OS preference (`prefers-color-scheme`), wit
 
 ## Layout quick facts
 
-- **Top bar**: right-aligned GitHub button only, no repeated site name.
-- **Hero**: centered, single bold title ("Data Learning Platform"), no subtitle — home
-  page only.
+- **Top bar**: `jiyun.dev` text wordmark left, dark/light mode toggle + GitHub button
+  right (`space-between`). Shown on every page, including `/posts/[slug]` and
+  `/admin/*`.
+- **Avatar**: small circular character illustration, centered directly below the top
+  bar. Shown on every page except `/posts/[slug]` and `/admin/*` (those are
+  reading/functional screens, not browsing entry points). Replaces the old
+  home-only "Data Learning Platform" hero title.
 - **Tab nav**: Latest / Study / Life / About, centered, active tab underlined in
   `--accent`; search icon pinned right.
 - **Card grid**: 2 columns. Photo if `thumbnailUrl` exists, else flat `--card-bg` block
