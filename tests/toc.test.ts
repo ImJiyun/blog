@@ -24,4 +24,16 @@ describe("extractHeadings", () => {
   it("returns an empty array for a body with no headings", () => {
     expect(extractHeadings("just a paragraph, no headings")).toEqual([]);
   });
+
+  it("keeps slug ids in sync with rehype-slug's whole-document occurrence count, even across excluded heading levels", () => {
+    // rehype-slug slugs every heading (h1-h6) in one pass over the rendered
+    // document, so a duplicate "Setup" at an excluded level (h4) still
+    // consumes a slugger occurrence before the next h2 "Setup" is reached.
+    const markdown = "## Setup\n\n### Detail\n\n#### Setup\n\n## Setup";
+    expect(extractHeadings(markdown)).toEqual([
+      { id: "setup", text: "Setup", level: 2 },
+      { id: "detail", text: "Detail", level: 3 },
+      { id: "setup-2", text: "Setup", level: 2 },
+    ]);
+  });
 });
