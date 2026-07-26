@@ -1,5 +1,13 @@
 import { test, expect } from "@playwright/test";
 
+// webServer spawns `next start`, which reads .env.local directly — it doesn't
+// go through tests/setup.ts (Vitest-only), so .env.local's ADMIN_PASSWORD_HASH
+// must already match this password before running `npm run test:e2e`, e.g.:
+//   node -e "console.log(require('bcryptjs').hashSync('test-password', 10))"
+// (Injecting the hash via webServer.env instead doesn't work: Next's dotenv
+// loader re-runs its $VAR interpolation on a key's value once per env file
+// that also declares it, which mangles a literal bcrypt hash — .env and
+// .env.local both declare ADMIN_PASSWORD_HASH, so it gets corrupted twice.)
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "test-password";
 const POST_TITLE = `Playwright Smoke Post ${Date.now()}`;
 
