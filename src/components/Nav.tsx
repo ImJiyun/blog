@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import styles from "./Nav.module.css";
+import ThemeToggle from "./ThemeToggle";
 
 const TABS = [
   { label: "Latest", href: "/" },
@@ -29,6 +30,7 @@ export default function Nav() {
           jiyun.dev
         </Link>
         <div className={styles.topBarActions}>
+          <ThemeToggle />
           <a
             href={GITHUB_URL}
             target="_blank"
@@ -46,8 +48,8 @@ export default function Nav() {
         <Image
           src="/character.jpg"
           alt=""
-          width={72}
-          height={72}
+          width={88}
+          height={88}
           className={styles.avatarImage}
           priority
         />

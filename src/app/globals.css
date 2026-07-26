@@ -30,8 +30,9 @@
   }
 }
 
-/* Manual override hooks for a future theme toggle — no toggle UI exists yet, this
-   just means one can be added later without touching every component's CSS. */
+/* Override hooks driven by ThemeToggle (src/components/ThemeToggle.tsx), which sets
+   data-theme on <html>. The layout's inline init script (src/app/layout.tsx) applies
+   the stored choice before hydration to avoid a flash of the wrong theme. */
 :root[data-theme="dark"] {
   --bg: #101114;
   --card-bg: #1b1d22;
