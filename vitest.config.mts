@@ -12,5 +12,9 @@ export default defineConfig({
     // assertions. Force sequential file execution instead of adding
     // per-file DB isolation, which isn't worth the complexity at this scale.
     fileParallelism: false,
+    // Vitest's default include glob matches any *.spec.ts file in the repo,
+    // which would otherwise sweep up e2e/smoke.spec.ts and try to run it
+    // against Playwright's test/expect, which aren't Vitest's.
+    exclude: ["**/node_modules/**", "e2e/**"],
   },
 });
