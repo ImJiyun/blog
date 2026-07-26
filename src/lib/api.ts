@@ -147,3 +147,14 @@ export async function toggleLike(postId: string): Promise<{ liked: boolean }> {
   }
   return response.json();
 }
+
+export async function login(password: string): Promise<void> {
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Login failed"));
+  }
+}
