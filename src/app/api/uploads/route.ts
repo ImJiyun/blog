@@ -18,6 +18,6 @@ export async function POST(request: NextRequest) {
   const blob = getBucket().file(filename);
   await blob.save(buffer, { contentType: file.type });
 
-  const url = `https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/${filename}`;
+  const url = `https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/${encodeURIComponent(filename)}`;
   return NextResponse.json({ url }, { status: 201 });
 }
