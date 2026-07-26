@@ -13,7 +13,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      <h2 className="sr-only">Latest</h2>
+      <h1 className="sr-only">Latest</h1>
       {latest.length === 0 ? (
         <p style={{ textAlign: "center", padding: "3rem 1.5rem", color: "var(--ink-soft)" }}>
           No posts yet.
