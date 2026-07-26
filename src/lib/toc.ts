@@ -3,6 +3,7 @@ import GithubSlugger from "github-slugger";
 export type Heading = { id: string; text: string; level: number };
 
 const HEADING_RE = /^(#{1,6})\s+(.+)$/gm;
+const CODE_BLOCK_RE = /```[\s\S]*?```/g;
 
 // Walk every heading level (h1–h6), not just h2/h3, through one shared
 // slugger — rehype-slug does the same across the whole rendered document, so
@@ -10,12 +11,17 @@ const HEADING_RE = /^(#{1,6})\s+(.+)$/gm;
 // occurrence-counter (for duplicate heading text) drift out of sync with the
 // ids rehype-slug actually assigns in the DOM. Filter to h2/h3 after slugging
 // so the returned ids still match what ScrollProgressBar/TableOfContents link to.
+// Fenced code blocks are stripped first — rehype-slug parses the real markdown
+// AST and never treats a `#`-prefixed line inside a fence as a heading, so
+// matching one here (e.g. a Python/shell comment) would both add a bogus ToC
+// entry and desync the occurrence-counter for every real heading after it.
 export function extractHeadings(markdown: string): Heading[] {
+  const withoutCodeBlocks = markdown.replace(CODE_BLOCK_RE, "");
   const slugger = new GithubSlugger();
   const headings: Heading[] = [];
   HEADING_RE.lastIndex = 0;
   let match: RegExpExecArray | null;
-  while ((match = HEADING_RE.exec(markdown)) !== null) {
+  while ((match = HEADING_RE.exec(withoutCodeBlocks)) !== null) {
     const level = match[1].length;
     const text = match[2].trim();
     const id = slugger.slug(text);

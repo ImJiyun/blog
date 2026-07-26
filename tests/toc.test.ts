@@ -36,4 +36,17 @@ describe("extractHeadings", () => {
       { id: "setup-2", text: "Setup", level: 2 },
     ]);
   });
+
+  it("ignores heading-shaped lines inside fenced code blocks", () => {
+    // rehype-slug parses the real markdown AST and never treats a
+    // `#`-prefixed line inside a fence as a heading, so extractHeadings must
+    // strip fences first — otherwise a code comment like "## Setup" both adds
+    // a bogus ToC entry and desyncs the slugger count for real headings after it.
+    const markdown =
+      "## Setup\n\nintro\n\n```python\n## Setup\nimport pandas\n```\n\n## Setup";
+    expect(extractHeadings(markdown)).toEqual([
+      { id: "setup", text: "Setup", level: 2 },
+      { id: "setup-1", text: "Setup", level: 2 },
+    ]);
+  });
 });
