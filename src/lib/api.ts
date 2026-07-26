@@ -84,7 +84,12 @@ export async function getPosts(params: GetPostsParams = {}): Promise<Post[]> {
 }
 
 export async function getPost(slug: string): Promise<Post | null> {
-  const response = await serverFetch(`/api/posts/${encodeURIComponent(slug)}`);
+  // Next's dynamic route params arrive still percent-encoded for non-ASCII
+  // segments (verified against this Next/Turbopack version) — decode first so
+  // a Korean slug isn't encoded twice, which would 404 against the backend.
+  // decodeURIComponent is a no-op on an already-plain string, so this is safe
+  // regardless of whether params ever start arriving pre-decoded.
+  const response = await serverFetch(`/api/posts/${encodeURIComponent(decodeURIComponent(slug))}`);
   if (response.status === 404) return null;
   if (!response.ok) {
     throw new Error(await parseErrorMessage(response, "Failed to load post"));
