@@ -16,7 +16,7 @@ export default async function LifePage({
 
   const [posts, tags] = await Promise.all([
     getPosts({ category: effectiveCategory, tag, q }),
-    getTags(),
+    getTags(LIFE_CATEGORIES),
   ]);
   const filtered = effectiveCategory
     ? posts
