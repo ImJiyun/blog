@@ -57,4 +57,19 @@ describe("GET /api/tags", () => {
     );
     expect(counts).toEqual({ sql: 1 });
   });
+
+  it("falls back to unscoped when categories is malformed (empty after parsing)", async () => {
+    await createPost(
+      createRequest({ title: "SQL글", bodyMd: "x", category: "SQL", tags: ["sql"], status: "published" }),
+    );
+    await createPost(
+      createRequest({ title: "여행글", bodyMd: "x", category: "Travel", tags: ["travel"], status: "published" }),
+    );
+
+    const response = await GET(tagsRequest("?categories=,,"));
+    const counts = Object.fromEntries(
+      (await response.json()).map((row: { tag: string; count: number }) => [row.tag, row.count]),
+    );
+    expect(counts).toEqual({ sql: 1, travel: 1 });
+  });
 });

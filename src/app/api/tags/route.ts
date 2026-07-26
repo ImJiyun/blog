@@ -3,9 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const categoriesParam = request.nextUrl.searchParams.get("categories");
-  const categories = categoriesParam
+  const parsedCategories = categoriesParam
     ? categoriesParam.split(",").filter((c) => c.length > 0)
-    : undefined;
+    : [];
+  const categories = parsedCategories.length > 0 ? parsedCategories : undefined;
 
   const posts = await prisma.post.findMany({
     where: {

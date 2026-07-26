@@ -104,8 +104,11 @@ export async function getPost(slug: string): Promise<Post | null> {
 }
 
 export async function getTags(categories?: readonly string[]): Promise<TagCount[]> {
-  const qs = categories?.length ? `?categories=${categories.join(",")}` : "";
-  const response = await serverFetch(`/api/tags${qs}`);
+  const search = new URLSearchParams();
+  if (categories?.length) search.set("categories", categories.join(","));
+  const qs = search.toString();
+
+  const response = await serverFetch(`/api/tags${qs ? `?${qs}` : ""}`);
   if (!response.ok) {
     throw new Error(await parseErrorMessage(response, "Failed to load tags"));
   }
