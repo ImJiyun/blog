@@ -5,7 +5,7 @@ import { plexMono } from "./fonts";
 import Nav from "@/components/Nav";
 
 export const metadata: Metadata = {
-  title: "Data Learning Platform",
+  title: "jiyun.dev",
   description:
     "A personal blog whose own usage data feeds a BI/analytics practice.",
 };

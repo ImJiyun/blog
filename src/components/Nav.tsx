@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import styles from "./Nav.module.css";
 
@@ -20,31 +21,39 @@ function isActiveTab(pathname: string, href: string): boolean {
 
 export default function Nav() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
 
   return (
     <header className={styles.header}>
       <div className={styles.topBar}>
-        <a
-          href={GITHUB_URL}
-          target="_blank"
-          rel="noreferrer"
-          className={styles.githubButton}
-        >
-          GitHub
-        </a>
+        <Link href="/" className={styles.wordmark}>
+          jiyun.dev
+        </Link>
+        <div className={styles.topBarActions}>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noreferrer"
+            className={styles.githubButton}
+          >
+            GitHub
+          </a>
+        </div>
       </div>
 
-      {isHome && (
-        <div className={styles.hero}>
-          <h1 className={styles.heroTitle}>Data Learning Platform</h1>
-        </div>
-      )}
+      <div className={styles.avatar}>
+        {/* Decorative — the "jiyun.dev" wordmark above already carries the site's
+            text identity, so this doesn't need alt text of its own. */}
+        <Image
+          src="/character.jpg"
+          alt=""
+          width={72}
+          height={72}
+          className={styles.avatarImage}
+          priority
+        />
+      </div>
 
-      <nav
-        className={isHome ? styles.tabNav : `${styles.tabNav} ${styles.tabNavSlim}`}
-        aria-label="Primary"
-      >
+      <nav className={styles.tabNav} aria-label="Primary">
         <ul className={styles.tabList}>
           {TABS.map((tab) => (
             <li key={tab.href}>
