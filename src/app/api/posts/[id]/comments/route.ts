@@ -20,8 +20,12 @@ export async function POST(request: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
 
+  // Cloud Run's Google Front End appends the real client IP to the end of any
+  // existing X-Forwarded-For header, so the last entry is the trusted one — the
+  // first entry is whatever the caller supplied and is fully spoofable on a
+  // direct API call.
   const forwardedFor = request.headers.get("x-forwarded-for");
-  const ip = forwardedFor?.split(",")[0]?.trim() || "unknown";
+  const ip = forwardedFor?.split(",").pop()?.trim() || "unknown";
   if (!checkRateLimit(`comment:${ip}`, 5, 60)) {
     return NextResponse.json(
       { error: "Too many comments, try again later" },
