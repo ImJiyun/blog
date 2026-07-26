@@ -41,10 +41,9 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
       const markdownImage = `![](${url})`;
       const textarea = textareaRef.current;
       if (textarea) {
-        const start = textarea.selectionStart ?? bodyMd.length;
-        const end = textarea.selectionEnd ?? bodyMd.length;
-        const next = bodyMd.slice(0, start) + markdownImage + bodyMd.slice(end);
-        setBodyMd(next);
+        const start = textarea.selectionStart ?? textarea.value.length;
+        const end = textarea.selectionEnd ?? textarea.value.length;
+        setBodyMd((prev) => prev.slice(0, start) + markdownImage + prev.slice(end));
         requestAnimationFrame(() => {
           textarea.focus();
           const cursor = start + markdownImage.length;
