@@ -12,6 +12,8 @@ export default function ThemeToggle() {
     const current = document.documentElement.getAttribute("data-theme");
     if (current === "dark" || current === "light") {
       setTheme(current);
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setTheme("dark");
     }
   }, []);
 
@@ -19,7 +21,9 @@ export default function ThemeToggle() {
     const next: Theme = theme === "dark" ? "light" : "dark";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
+    try {
+      localStorage.setItem("theme", next);
+    } catch (e) {}
   }
 
   return (
