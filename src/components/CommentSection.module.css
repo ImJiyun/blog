@@ -1,0 +1,120 @@
+.section {
+  margin: 3rem 0;
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+
+.heading {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: var(--text-h2);
+  color: var(--ink);
+  margin: 0 0 1.5rem;
+}
+
+.empty {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.list,
+.replies {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.replies {
+  margin-top: 0.75rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--border);
+}
+
+.item {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.itemHeader {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  margin-bottom: 0.35rem;
+}
+
+.author {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.date {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.commentBody {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0 0 0.4rem;
+}
+
+.replyButton {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  text-decoration: underline;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  max-width: 480px;
+}
+
+.form input,
+.form textarea {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.form button[type="submit"] {
+  align-self: flex-start;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.5rem 1.25rem;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
+.form button[type="submit"]:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.replyingTo {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.error {
+  color: #d64545;
+  font-size: 0.8rem;
+  margin: 0;
+}

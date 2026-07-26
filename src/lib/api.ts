@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-
 export type PostStatus = "draft" | "published";
 
 export type Post = {
@@ -50,6 +48,7 @@ function getBaseUrl(): string {
 // for a visitor with no `token` cookie, nothing extra is forwarded and drafts
 // 404 as normal.
 async function serverFetch(path: string): Promise<Response> {
+  const { cookies } = await import("next/headers");
   const cookieHeader = (await cookies()).toString();
   return fetch(`${getBaseUrl()}${path}`, {
     cache: "no-store",
