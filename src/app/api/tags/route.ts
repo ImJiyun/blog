@@ -1,9 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const categoriesParam = request.nextUrl.searchParams.get("categories");
+  const parsedCategories = categoriesParam
+    ? categoriesParam.split(",").filter((c) => c.length > 0)
+    : [];
+  const categories = parsedCategories.length > 0 ? parsedCategories : undefined;
+
   const posts = await prisma.post.findMany({
-    where: { status: "published" },
+    where: {
+      status: "published",
+      ...(categories ? { category: { in: categories } } : {}),
+    },
     select: { tags: true },
   });
   const counts = new Map<string, number>();

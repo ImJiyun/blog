@@ -16,7 +16,7 @@ export default async function StudyPage({
 
   const [posts, tags] = await Promise.all([
     getPosts({ category: effectiveCategory, tag, q }),
-    getTags(),
+    getTags(STUDY_CATEGORIES),
   ]);
   const filtered = effectiveCategory
     ? posts

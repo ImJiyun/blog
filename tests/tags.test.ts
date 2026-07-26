@@ -15,9 +15,13 @@ function createRequest(body: Record<string, unknown>) {
   });
 }
 
+function tagsRequest(qs = "") {
+  return new NextRequest(`http://localhost/api/tags${qs}`);
+}
+
 describe("GET /api/tags", () => {
   it("returns an empty list", async () => {
-    const response = await GET();
+    const response = await GET(tagsRequest());
     expect(await response.json()).toEqual([]);
   });
 
@@ -32,10 +36,40 @@ describe("GET /api/tags", () => {
       createRequest({ title: "초안", bodyMd: "x", category: "SQL", tags: ["sql"], status: "draft" }),
     );
 
-    const response = await GET();
+    const response = await GET(tagsRequest());
     const counts = Object.fromEntries(
       (await response.json()).map((row: { tag: string; count: number }) => [row.tag, row.count]),
     );
     expect(counts).toEqual({ sql: 2, join: 1 });
+  });
+
+  it("scopes tags to the given categories", async () => {
+    await createPost(
+      createRequest({ title: "SQL글", bodyMd: "x", category: "SQL", tags: ["sql"], status: "published" }),
+    );
+    await createPost(
+      createRequest({ title: "여행글", bodyMd: "x", category: "Travel", tags: ["travel"], status: "published" }),
+    );
+
+    const response = await GET(tagsRequest("?categories=SQL,Python,Statistics,Tableau,PowerBI"));
+    const counts = Object.fromEntries(
+      (await response.json()).map((row: { tag: string; count: number }) => [row.tag, row.count]),
+    );
+    expect(counts).toEqual({ sql: 1 });
+  });
+
+  it("falls back to unscoped when categories is malformed (empty after parsing)", async () => {
+    await createPost(
+      createRequest({ title: "SQL글", bodyMd: "x", category: "SQL", tags: ["sql"], status: "published" }),
+    );
+    await createPost(
+      createRequest({ title: "여행글", bodyMd: "x", category: "Travel", tags: ["travel"], status: "published" }),
+    );
+
+    const response = await GET(tagsRequest("?categories=,,"));
+    const counts = Object.fromEntries(
+      (await response.json()).map((row: { tag: string; count: number }) => [row.tag, row.count]),
+    );
+    expect(counts).toEqual({ sql: 1, travel: 1 });
   });
 });
