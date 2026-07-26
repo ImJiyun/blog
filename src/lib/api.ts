@@ -36,6 +36,12 @@ export const STUDY_CATEGORIES = [
 
 export const LIFE_CATEGORIES = ["Travel", "Career"] as const;
 
+export const ALL_CATEGORIES = [
+  ...STUDY_CATEGORIES,
+  "Projects",
+  ...LIFE_CATEGORIES,
+] as const;
+
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 }
@@ -164,4 +170,46 @@ export async function deletePost(id: string): Promise<void> {
   if (!response.ok && response.status !== 204) {
     throw new Error(await parseErrorMessage(response, "Failed to delete post"));
   }
+}
+
+export type PostInput = {
+  title: string;
+  bodyMd: string;
+  category: string;
+  tags: string[];
+  status: PostStatus;
+};
+
+export async function createPost(input: PostInput): Promise<Post> {
+  const response = await fetch("/api/posts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Failed to create post"));
+  }
+  return response.json();
+}
+
+export async function updatePost(id: string, input: PostInput): Promise<Post> {
+  const response = await fetch(`/api/posts/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Failed to update post"));
+  }
+  return response.json();
+}
+
+export async function uploadImage(file: File): Promise<{ url: string }> {
+  const formData = new FormData();
+  formData.set("file", file);
+  const response = await fetch("/api/uploads", { method: "POST", body: formData });
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Failed to upload image"));
+  }
+  return response.json();
 }
