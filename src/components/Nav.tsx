@@ -20,8 +20,17 @@ function isActiveTab(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+// Post detail pages and the whole admin area are functional/reading screens, not
+// browsing entry points — the avatar and site-wide tab nav are dropped there so they
+// don't compete with the article body or admin tools. The wordmark, theme toggle, and
+// GitHub link stay everywhere.
+function isMinimalHeader(pathname: string): boolean {
+  return pathname.startsWith("/posts/") || pathname.startsWith("/admin");
+}
+
 export default function Nav() {
   const pathname = usePathname();
+  const minimal = isMinimalHeader(pathname);
 
   return (
     <header className={styles.header}>
@@ -42,51 +51,55 @@ export default function Nav() {
         </div>
       </div>
 
-      <div className={styles.avatar}>
-        {/* Decorative — the "jiyun.dev" wordmark above already carries the site's
-            text identity, so this doesn't need alt text of its own. */}
-        <Image
-          src="/character.jpg"
-          alt=""
-          width={88}
-          height={88}
-          className={styles.avatarImage}
-          priority
-        />
-      </div>
+      {!minimal && (
+        <div className={styles.avatar}>
+          {/* Decorative — the "jiyun.dev" wordmark above already carries the site's
+              text identity, so this doesn't need alt text of its own. */}
+          <Image
+            src="/character.jpg"
+            alt=""
+            width={88}
+            height={88}
+            className={styles.avatarImage}
+            priority
+          />
+        </div>
+      )}
 
-      <nav className={styles.tabNav} aria-label="Primary">
-        <ul className={styles.tabList}>
-          {TABS.map((tab) => (
-            <li key={tab.href}>
-              <Link
-                href={tab.href}
-                className={
-                  isActiveTab(pathname, tab.href)
-                    ? `${styles.tab} ${styles.tabActive}`
-                    : styles.tab
-                }
-              >
-                {tab.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <Link href="/posts" className={styles.searchIcon} aria-label="Search posts">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
-            <line
-              x1="12.5"
-              y1="12.5"
-              x2="17"
-              y2="17"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </Link>
-      </nav>
+      {!minimal && (
+        <nav className={styles.tabNav} aria-label="Primary">
+          <ul className={styles.tabList}>
+            {TABS.map((tab) => (
+              <li key={tab.href}>
+                <Link
+                  href={tab.href}
+                  className={
+                    isActiveTab(pathname, tab.href)
+                      ? `${styles.tab} ${styles.tabActive}`
+                      : styles.tab
+                  }
+                >
+                  {tab.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link href="/posts" className={styles.searchIcon} aria-label="Search posts">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+              <line
+                x1="12.5"
+                y1="12.5"
+                x2="17"
+                y2="17"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </Link>
+        </nav>
+      )}
     </header>
   );
 }
