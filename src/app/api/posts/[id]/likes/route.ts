@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -9,6 +10,18 @@ export async function POST(request: NextRequest, { params }: Params) {
   const post = await prisma.post.findUnique({ where: { id: postId } });
   if (!post) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
+  }
+
+  // Cloud Run's Google Front End appends the real client IP to the end of any
+  // existing X-Forwarded-For header, so the last entry is the trusted one — see
+  // the same fix in posts/[id]/comments/route.ts.
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  const ip = forwardedFor?.split(",").pop()?.trim() || "unknown";
+  if (!checkRateLimit(`like:${ip}`, 10, 60)) {
+    return NextResponse.json(
+      { error: "Too many like requests, try again later" },
+      { status: 429 },
+    );
   }
 
   const existingVisitorId = request.cookies.get("visitor_id")?.value;

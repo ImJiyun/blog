@@ -4,8 +4,12 @@ import { POST as createPost } from "@/app/api/posts/route";
 import { POST as toggleLike } from "@/app/api/posts/[id]/likes/route";
 import { resetDb } from "./helpers/db";
 import { adminCookieHeader } from "./helpers/auth";
+import { resetRateLimits } from "@/lib/ratelimit";
 
-beforeEach(resetDb);
+beforeEach(async () => {
+  await resetDb();
+  resetRateLimits();
+});
 
 function params(id: string) {
   return { params: Promise.resolve({ id }) };
@@ -72,5 +76,15 @@ describe("POST /api/posts/{id}/likes", () => {
     await toggleLike(likeRequest("visitor-1"), params(postId));
     const response = await toggleLike(likeRequest("visitor-2"), params(postId));
     expect(await response.json()).toEqual({ liked: true });
+  });
+
+  it("rate-limits like toggles per IP", async () => {
+    const postId = await makePost();
+    for (let i = 0; i < 10; i++) {
+      const response = await toggleLike(likeRequest(`visitor-${i}`), params(postId));
+      expect(response.status).toBe(200);
+    }
+    const limited = await toggleLike(likeRequest("visitor-11"), params(postId));
+    expect(limited.status).toBe(429);
   });
 });
