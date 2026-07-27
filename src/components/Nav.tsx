@@ -41,8 +41,24 @@ export default function Nav() {
 
   // Keep the box in sync with the URL: reflect ?q= while on /posts, clear it
   // on any other route (e.g. clicking a tab away from a search).
+  //
+  // The cleanup below cancels any debounced pushQuery scheduled by
+  // handleChange. That timeout closes over the pathname/searchParams from
+  // the render when the keystroke happened, so if the route changes before
+  // the timer fires, the stale closure would call
+  // router.replace("/posts?q=...") and force-navigate the user back to
+  // /posts even though they've already left. React runs an effect's cleanup
+  // right before the effect re-runs (i.e. whenever pathname/searchParams
+  // actually change) and also on unmount, so this one cleanup covers both
+  // the route-change race and the "no cleanup on unmount" case.
   useEffect(() => {
     setQuery(pathname === "/posts" ? searchParams.get("q") ?? "" : "");
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+    };
   }, [pathname, searchParams]);
 
   function pushQuery(value: string) {
