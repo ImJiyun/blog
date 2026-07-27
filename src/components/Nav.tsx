@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import styles from "./Nav.module.css";
 import ThemeToggle from "./ThemeToggle";
 
@@ -14,6 +15,7 @@ const TABS = [
 ];
 
 const GITHUB_URL = "https://github.com/ImJiyun";
+const SEARCH_DEBOUNCE_MS = 300;
 
 function isActiveTab(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
@@ -30,7 +32,42 @@ function isMinimalHeader(pathname: string): boolean {
 
 export default function Nav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const minimal = isMinimalHeader(pathname);
+
+  const [query, setQuery] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keep the box in sync with the URL: reflect ?q= while on /posts, clear it
+  // on any other route (e.g. clicking a tab away from a search).
+  useEffect(() => {
+    setQuery(pathname === "/posts" ? searchParams.get("q") ?? "" : "");
+  }, [pathname, searchParams]);
+
+  function pushQuery(value: string) {
+    const next = new URLSearchParams(pathname === "/posts" ? searchParams.toString() : "");
+    if (value) {
+      next.set("q", value);
+    } else {
+      next.delete("q");
+    }
+    const qs = next.toString();
+    router.replace(`/posts${qs ? `?${qs}` : ""}`);
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setQuery(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => pushQuery(value), SEARCH_DEBOUNCE_MS);
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    pushQuery(query);
+  }
 
   return (
     <header className={styles.header}>
@@ -84,20 +121,17 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <Link href="/posts" className={styles.searchIcon} aria-label="Search posts">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
-              <line
-                x1="12.5"
-                y1="12.5"
-                x2="17"
-                y2="17"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          </Link>
+          <form role="search" className={styles.searchForm} onSubmit={handleSubmit}>
+            <input
+              type="search"
+              value={query}
+              onChange={handleChange}
+              placeholder="Search posts"
+              aria-label="Search posts"
+              data-testid="nav-search-input"
+              className={styles.searchInput}
+            />
+          </form>
         </nav>
       )}
     </header>

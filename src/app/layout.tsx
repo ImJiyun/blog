@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "pretendard/dist/web/static/pretendard.css";
 import "./globals.css";
 import { plexMono } from "./fonts";
+import { Suspense } from "react";
 import Nav from "@/components/Nav";
 
 export const metadata: Metadata = {
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" className={plexMono.variable} suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <Nav />
+        <Suspense fallback={null}>
+          <Nav />
+        </Suspense>
         {children}
       </body>
     </html>
