@@ -1,16 +1,17 @@
 .button {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   border: 1px solid var(--border);
   background: var(--bg);
-  color: var(--ink);
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
+  color: var(--ink-soft);
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 1.1rem;
   font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.85rem;
   margin: 2rem 0;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .button:hover {
@@ -20,4 +21,18 @@
 .liked {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-soft);
+  background: transparent;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.dotLiked {
+  background: var(--accent);
+  border-color: var(--accent);
 }

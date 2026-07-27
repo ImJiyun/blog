@@ -30,7 +30,8 @@ export default function LikeButton({ postId }: { postId: string }) {
       aria-pressed={liked}
       data-testid="like-button"
     >
-      <span aria-hidden="true">{liked ? "♥" : "♡"}</span> {liked ? "Liked" : "Like"}
+      <span aria-hidden="true" className={liked ? `${styles.dot} ${styles.dotLiked}` : styles.dot} />
+      {liked ? "Liked" : "Like"}
     </button>
   );
 }
