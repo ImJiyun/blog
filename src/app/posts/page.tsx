@@ -2,6 +2,7 @@ import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
 import { getPosts, getTags } from "@/lib/api";
+import styles from "./page.module.css";
 
 type SearchParams = { category?: string; tag?: string; q?: string };
 
@@ -19,17 +20,7 @@ export default async function PostsPage({
 
   return (
     <main>
-      <form
-        action="/posts"
-        method="get"
-        style={{
-          maxWidth: 960,
-          margin: "2rem auto 0",
-          padding: "0 1.5rem",
-          display: "flex",
-          gap: "0.5rem",
-        }}
-      >
+      <form action="/posts" method="get" className={styles.searchForm}>
         {category && <input type="hidden" name="category" value={category} />}
         {tag && <input type="hidden" name="tag" value={tag} />}
         <input
@@ -39,29 +30,9 @@ export default async function PostsPage({
           placeholder="Search posts"
           aria-label="Search posts"
           data-testid="posts-search-input"
-          style={{
-            flex: 1,
-            padding: "0.5rem 0.75rem",
-            border: "1px solid var(--border)",
-            borderRadius: 4,
-            font: "inherit",
-            background: "var(--bg)",
-            color: "var(--ink)",
-          }}
+          className={styles.searchInput}
         />
-        <button
-          type="submit"
-          data-testid="posts-search-submit"
-          style={{
-            padding: "0.5rem 1rem",
-            border: "1px solid var(--border)",
-            borderRadius: 4,
-            background: "var(--bg)",
-            color: "var(--ink)",
-            fontFamily: "var(--font-sans)",
-            fontWeight: 500,
-          }}
-        >
+        <button type="submit" data-testid="posts-search-submit" className={styles.searchSubmit}>
           Search
         </button>
       </form>
@@ -74,8 +45,8 @@ export default async function PostsPage({
         </p>
       ) : (
         <PostGrid>
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+          {posts.map((post, i) => (
+            <PostCard key={post.id} post={post} index={i} />
           ))}
         </PostGrid>
       )}

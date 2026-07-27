@@ -36,10 +36,10 @@
 }
 
 .meta {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-weight: 500;
   font-size: var(--text-meta);
-  color: var(--ink-soft);
+  color: var(--accent);
   margin: 0;
 }
 
@@ -64,11 +64,19 @@
 }
 
 .tagLink {
-  color: var(--accent);
+  color: var(--ink-soft);
   text-decoration: none;
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 3px 9px;
+}
+
+.tagLink:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 @media (max-width: 860px) {

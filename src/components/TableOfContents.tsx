@@ -32,6 +32,7 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
 
   return (
     <nav className={styles.toc} aria-label="Table of contents" data-testid="toc">
+      <div className={styles.label}>목차</div>
       <ul className={styles.list}>
         {headings.map((heading) => (
           <li
