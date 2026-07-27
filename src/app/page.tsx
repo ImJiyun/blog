@@ -20,8 +20,8 @@ export default async function HomePage() {
         </p>
       ) : (
         <PostGrid>
-          {latest.map((post) => (
-            <PostCard key={post.id} post={post} />
+          {latest.map((post, i) => (
+            <PostCard key={post.id} post={post} index={i} />
           ))}
         </PostGrid>
       )}

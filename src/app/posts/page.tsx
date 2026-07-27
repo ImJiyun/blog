@@ -74,8 +74,8 @@ export default async function PostsPage({
         </p>
       ) : (
         <PostGrid>
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+          {posts.map((post, i) => (
+            <PostCard key={post.id} post={post} index={i} />
           ))}
         </PostGrid>
       )}

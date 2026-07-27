@@ -31,8 +31,8 @@ export default async function StudyPage({
         </p>
       ) : (
         <PostGrid>
-          {filtered.map((post) => (
-            <PostCard key={post.id} post={post} />
+          {filtered.map((post, i) => (
+            <PostCard key={post.id} post={post} index={i} />
           ))}
         </PostGrid>
       )}

@@ -10,10 +10,13 @@ function formatDate(iso: string | null): string {
   ).padStart(2, "0")}`;
 }
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({ post, index }: { post: Post; index?: number }) {
   return (
     <Link href={`/posts/${post.slug}`} className={styles.card} data-testid="post-card">
       <div className={styles.thumbnail}>
+        {typeof index === "number" && (
+          <span className={styles.indexBadge}>{String(index + 1).padStart(2, "0")}</span>
+        )}
         {post.thumbnailUrl ? (
           // thumbnailUrl is the first image URL found in the post's markdown body
           // (extractFirstImageUrl) — an arbitrary external host, not a fixed bucket.
