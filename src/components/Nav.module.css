@@ -112,3 +112,33 @@
 .searchIcon:hover {
   color: var(--accent);
 }
+
+@media (max-width: 560px) {
+  .tabNav {
+    justify-content: flex-start;
+    padding: 0.75rem calc(1.5rem + 2.25rem) 1.25rem 1.5rem;
+  }
+
+  .tabList {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .tabList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabList li {
+    flex-shrink: 0;
+  }
+
+  .tab {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+}

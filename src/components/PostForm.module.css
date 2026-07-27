@@ -96,6 +96,7 @@
 
 .actions button[data-testid="publish-button"]:hover {
   opacity: 0.85;
+  color: var(--bg);
 }
 
 .error {
