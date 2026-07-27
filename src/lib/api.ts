@@ -42,7 +42,7 @@ export const ALL_CATEGORIES = [
   ...LIFE_CATEGORIES,
 ] as const;
 
-export const LATEST_CATEGORIES = ALL_CATEGORIES.filter(
+export const LATEST_CATEGORIES: readonly string[] = ALL_CATEGORIES.filter(
   (c) => !(LIFE_CATEGORIES as readonly string[]).includes(c),
 );
 
