@@ -82,13 +82,16 @@ Dark mode follows OS preference (`prefers-color-scheme`), with `[data-theme="dar
   reading/functional screens, not browsing entry points).
 - **Tab nav**: Latest / Study / Life / About, centered, rendered as `--radius-pill`
   buttons — active tab is a solid `--accent` fill with `--bg`-colored text (not an
-  underline); search icon pinned right.
+  underline); `space-between` against a pill-shaped live search input pinned right
+  (debounced, routes to `/posts?q=`).
 - **Card grid**: 2 columns. Photo if `thumbnailUrl` exists, else flat `--card-bg` block
   with category name in small-caps mono. Each card also gets a numbered `01`/`02`/...
   badge (mono, `--ink`-on-`--bg` chip) pinned to the thumbnail's top-left corner.
-- **Tag filter chips** (`/posts` etc.): `--radius-pill` pills, not bordered rectangles.
-  Tag name in `--ink`, count in small `--ink-soft` mono. Active chip is a solid
-  `--accent` fill with `--bg`-colored text.
+- **Tag filter chips** (`/posts`, `/study`, `/life`, and now the home feed): `--radius-pill`
+  pills, not bordered rectangles. Tag name in `--ink`, count in small `--ink-soft` mono.
+  Active chip is a solid `--accent` fill with `--bg`-colored text. `PostCard` also shows
+  each post's own tags as static (non-interactive) `--radius-pill` pills — those aren't
+  filter controls, just labels.
 - **Post detail**: centered breadcrumb + title + meta (meta text in mono `--accent`),
   then two columns — body copy main column, sticky 200px table-of-contents right rail
   (headed by a small mono "목차" label). Code blocks are bordered `--card-bg` panels.
@@ -114,7 +117,6 @@ if it ever becomes a real maintenance burden.
 
 A few minor visual inconsistencies from the redesign are known and deferred, not
 blocking: `PostCard`'s index-badge radius is hardcoded to `6px` instead of referencing
-`--radius-sm`; the `/posts` search submit control has no visible border until hover;
-`PostForm`'s image-upload button wasn't migrated to the pill/radius-sm language used by
-the rest of the form; `MarkdownBody`'s code-block/inline-code radii weren't migrated to
-`--radius-sm`. Bundle these into one small cleanup pass if picked up.
+`--radius-sm`; `PostForm`'s image-upload button wasn't migrated to the pill/radius-sm
+language used by the rest of the form; `MarkdownBody`'s code-block/inline-code radii
+weren't migrated to `--radius-sm`. Bundle these into one small cleanup pass if picked up.
