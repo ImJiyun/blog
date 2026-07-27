@@ -29,7 +29,9 @@ export default function AdminLoginPage() {
   return (
     <main className={styles.page}>
       <form className={styles.form} onSubmit={handleSubmit} data-testid="login-form">
-        <h1 className={styles.title}>Admin Login</h1>
+        <h1 className={styles.title}>
+          <span className={styles.titlePrompt}>&gt;</span>jiyun.dev/admin
+        </h1>
         <input
           type="password"
           placeholder="Password"
