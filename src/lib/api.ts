@@ -42,6 +42,10 @@ export const ALL_CATEGORIES = [
   ...LIFE_CATEGORIES,
 ] as const;
 
+export const LATEST_CATEGORIES = ALL_CATEGORIES.filter(
+  (c) => !(LIFE_CATEGORIES as readonly string[]).includes(c),
+);
+
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 }
