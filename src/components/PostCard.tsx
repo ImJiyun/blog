@@ -31,6 +31,15 @@ export default function PostCard({ post, index }: { post: Post; index?: number }
         )}
       </div>
       <div className={styles.body}>
+        {post.tags.length > 0 && (
+          <div className={styles.tagRow}>
+            {post.tags.map((tag) => (
+              <span key={tag} className={styles.tagPill}>
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
         <h3 className={styles.title}>{post.title}</h3>
         <div className={styles.meta}>
           <span>{formatDate(post.publishedAt ?? post.createdAt)}</span>
