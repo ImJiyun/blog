@@ -36,7 +36,7 @@ export default function Nav() {
     <header className={styles.header}>
       <div className={styles.topBar}>
         <Link href="/" className={styles.wordmark}>
-          jiyun.dev
+          <span className={styles.wordmarkPrompt}>&gt;</span>jiyun.dev
         </Link>
         <div className={styles.topBarActions}>
           <ThemeToggle />

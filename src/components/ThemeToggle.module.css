@@ -1,17 +1,25 @@
 .button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--bg);
-  color: var(--ink);
+  width: 44px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  border: none;
+  position: relative;
+  cursor: pointer;
   padding: 0;
 }
 
-.button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: left 0.18s ease;
+}
+
+.knobDark {
+  left: 23px;
 }
