@@ -136,6 +136,7 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
           type="button"
           role="switch"
           aria-checked={isPublic}
+          aria-label="Public"
           onClick={() => setIsPublic((prev) => !prev)}
           className={styles.switch}
           data-testid="post-public-toggle"
