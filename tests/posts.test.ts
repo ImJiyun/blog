@@ -212,6 +212,33 @@ describe("POST /api/posts", () => {
       "회귀분석 p-value",
     ]);
   });
+
+  it("defaults isPublic to true when omitted", async () => {
+    const create = await POST(
+      createRequest({
+        title: "기본값 글",
+        bodyMd: "본문",
+        category: "SQL",
+        tags: [],
+        status: "published",
+      }),
+    );
+    expect((await create.json()).isPublic).toBe(true);
+  });
+
+  it("accepts isPublic: false on create", async () => {
+    const create = await POST(
+      createRequest({
+        title: "비공개 글",
+        bodyMd: "본문",
+        category: "SQL",
+        tags: [],
+        status: "published",
+        isPublic: false,
+      }),
+    );
+    expect((await create.json()).isPublic).toBe(false);
+  });
 });
 
 describe("PUT /api/posts/{id}", () => {

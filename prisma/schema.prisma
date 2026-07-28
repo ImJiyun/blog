@@ -8,21 +8,21 @@ datasource db {
 }
 
 model Post {
-  id            String    @id @default(uuid()) @db.Uuid
-  title         String
-  slug          String    @unique
-  bodyMd        String    @map("body_md")
-  thumbnailUrl  String?   @map("thumbnail_url")
-  readMinutes   Int       @default(1) @map("read_minutes")
-  category      String
-  tags          String[]
-  status        String    @default("draft")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  publishedAt   DateTime? @map("published_at")
-
-  comments Comment[]
-  likes    Like[]
+  id           String    @id @default(uuid()) @db.Uuid
+  title        String
+  slug         String    @unique
+  bodyMd       String    @map("body_md")
+  thumbnailUrl String?   @map("thumbnail_url")
+  readMinutes  Int       @default(1) @map("read_minutes")
+  category     String
+  tags         String[]
+  status       String    @default("draft")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  publishedAt  DateTime? @map("published_at")
+  isPublic     Boolean   @default(true) @map("is_public")
+  comments     Comment[]
+  likes        Like[]
 
   @@map("posts")
 }
@@ -34,8 +34,7 @@ model Comment {
   authorName      String   @map("author_name")
   body            String
   createdAt       DateTime @default(now()) @map("created_at")
-
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post            Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@map("comments")
 }
@@ -45,8 +44,7 @@ model Like {
   postId    String   @map("post_id") @db.Uuid
   visitorId String   @map("visitor_id")
   createdAt DateTime @default(now()) @map("created_at")
-
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([postId, visitorId])
   @@map("likes")
