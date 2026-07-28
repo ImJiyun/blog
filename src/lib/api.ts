@@ -10,6 +10,7 @@ export type Post = {
   category: string;
   tags: string[];
   status: PostStatus;
+  isPublic: boolean;
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -186,6 +187,7 @@ export type PostInput = {
   category: string;
   tags: string[];
   status: PostStatus;
+  isPublic: boolean;
 };
 
 export async function createPost(input: PostInput): Promise<Post> {
