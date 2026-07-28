@@ -21,13 +21,13 @@ export async function GET(request: NextRequest) {
   const tag = params.get("tag") ?? undefined;
   const q = params.get("q") ?? undefined;
   const requestedStatus = params.get("status") ?? "published";
-  const status =
-    requestedStatus === "published" || isAdmin(request) ? requestedStatus : "published";
+  const admin = isAdmin(request);
+  const status = requestedStatus === "published" || admin ? requestedStatus : "published";
 
   const posts = await prisma.post.findMany({
     where: {
       status,
-      ...(isAdmin(request) ? {} : { isPublic: true }),
+      ...(admin ? {} : { isPublic: true }),
       ...(category ? { category } : {}),
       ...(tag ? { tags: { has: tag } } : {}),
       ...(q
