@@ -36,6 +36,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
       category: body.category,
       tags: body.tags ?? [],
       status: body.status,
+      isPublic: body.isPublic ?? existing.isPublic,
       thumbnailUrl: extractFirstImageUrl(body.bodyMd),
       readMinutes: computeReadMinutes(body.bodyMd),
       publishedAt:
