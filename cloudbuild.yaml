@@ -1,0 +1,32 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - build
+      - -t
+      - us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog:$SHORT_SHA
+      - -t
+      - us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog:latest
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - push
+      - us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog
+      - --all-tags
+
+  - name: "gcr.io/google-cloud-sdk/slim"
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - blog
+      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog:$SHORT_SHA
+      - --region=us-central1
+      - --platform=managed
+
+images:
+  - us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog:$SHORT_SHA
+  - us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
