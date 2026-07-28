@@ -101,3 +101,9 @@
   border-radius: var(--radius-pill);
   padding: 0.2rem 0.6rem;
 }
+
+.privateLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

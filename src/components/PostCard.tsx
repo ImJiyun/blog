@@ -45,6 +45,12 @@ export default function PostCard({ post, index }: { post: Post; index?: number }
           <span>{formatDate(post.publishedAt ?? post.createdAt)}</span>
           <span aria-hidden="true">·</span>
           <span>{post.readMinutes} min read</span>
+          {post.isPublic === false && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span className={styles.privateLabel}>Private</span>
+            </>
+          )}
         </div>
       </div>
     </Link>
