@@ -76,6 +76,18 @@
   font-weight: 600;
 }
 
+.privateTag {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 0.1rem 0.5rem;
+}
+
 .actions {
   display: flex;
   gap: 1rem;
