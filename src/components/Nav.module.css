@@ -61,14 +61,14 @@
 .tabNav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1.5rem;
   padding: 0.75rem 1.5rem 1.25rem;
 }
 
 .tabList {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -102,7 +102,7 @@
 }
 
 .searchForm {
-  flex: 1 1 320px;
+  flex: 0 1 320px;
   max-width: 320px;
   display: flex;
   align-items: center;
