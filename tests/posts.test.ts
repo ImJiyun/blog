@@ -398,4 +398,40 @@ describe("GET /api/posts/{slug}", () => {
     expect(response.status).toBe(200);
     expect((await response.json()).status).toBe("draft");
   });
+
+  it("returns 404 for a private published slug when unauthenticated", async () => {
+    const create = await POST(
+      createRequest({
+        title: "비공개",
+        bodyMd: "본문",
+        category: "SQL",
+        tags: [],
+        status: "published",
+        isPublic: false,
+      }),
+    );
+    const slug = (await create.json()).slug;
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(slug));
+    expect(response.status).toBe(404);
+  });
+
+  it("returns a private published slug when authenticated as admin", async () => {
+    const create = await POST(
+      createRequest({
+        title: "비공개",
+        bodyMd: "본문",
+        category: "SQL",
+        tags: [],
+        status: "published",
+        isPublic: false,
+      }),
+    );
+    const slug = (await create.json()).slug;
+    const response = await GET_ONE(
+      new NextRequest("http://localhost", { headers: { Cookie: adminCookieHeader() } }),
+      params(slug),
+    );
+    expect(response.status).toBe(200);
+    expect((await response.json()).isPublic).toBe(false);
+  });
 });

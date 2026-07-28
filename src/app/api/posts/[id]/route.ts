@@ -11,7 +11,7 @@ export async function GET(request: NextRequest, { params }: Params) {
   if (!post) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
-  if (post.status !== "published" && !isAdmin(request)) {
+  if ((post.status !== "published" || !post.isPublic) && !isAdmin(request)) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
   return NextResponse.json(post);
