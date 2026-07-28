@@ -342,6 +342,66 @@ describe("PUT /api/posts/{id}", () => {
     );
     expect(response.status).toBe(401);
   });
+
+  it("updates isPublic when provided", async () => {
+    const create = await POST(
+      createRequest({
+        title: "원제목",
+        bodyMd: "원본",
+        category: "SQL",
+        tags: [],
+        status: "published",
+      }),
+    );
+    const postId = (await create.json()).id;
+
+    const update = await PUT(
+      new NextRequest("http://localhost", {
+        method: "PUT",
+        body: JSON.stringify({
+          title: "원제목",
+          bodyMd: "원본",
+          category: "SQL",
+          tags: [],
+          status: "published",
+          isPublic: false,
+        }),
+        headers: { "Content-Type": "application/json", Cookie: adminCookieHeader() },
+      }),
+      params(postId),
+    );
+    expect((await update.json()).isPublic).toBe(false);
+  });
+
+  it("preserves isPublic when omitted from the update body", async () => {
+    const create = await POST(
+      createRequest({
+        title: "원제목",
+        bodyMd: "원본",
+        category: "SQL",
+        tags: [],
+        status: "published",
+        isPublic: false,
+      }),
+    );
+    const postId = (await create.json()).id;
+
+    const update = await PUT(
+      new NextRequest("http://localhost", {
+        method: "PUT",
+        body: JSON.stringify({
+          title: "수정된 제목",
+          bodyMd: "원본",
+          category: "SQL",
+          tags: [],
+          status: "published",
+        }),
+        headers: { "Content-Type": "application/json", Cookie: adminCookieHeader() },
+      }),
+      params(postId),
+    );
+    expect((await update.json()).isPublic).toBe(false);
+  });
 });
 
 describe("DELETE /api/posts/{id}", () => {
