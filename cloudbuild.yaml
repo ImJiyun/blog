@@ -25,7 +25,7 @@ steps:
       - us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog
       - --all-tags
 
-  - name: "gcr.io/google-cloud-sdk/slim"
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     entrypoint: gcloud
     args:
       - run
