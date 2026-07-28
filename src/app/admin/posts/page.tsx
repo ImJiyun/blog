@@ -44,6 +44,7 @@ export default async function AdminPostsPage() {
                 <td>{post.category}</td>
                 <td className={post.status === "draft" ? styles.draft : styles.published}>
                   {post.status}
+                  {!post.isPublic && <span className={styles.privateTag}>Private</span>}
                 </td>
                 <td>{new Date(post.updatedAt).toLocaleDateString("ko-KR")}</td>
                 <td className={styles.actions}>
