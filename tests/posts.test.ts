@@ -239,6 +239,52 @@ describe("POST /api/posts", () => {
     );
     expect((await create.json()).isPublic).toBe(false);
   });
+
+  it("excludes a private post from the list for an unauthenticated caller", async () => {
+    await POST(
+      createRequest({
+        title: "공개글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: [],
+        status: "published",
+        isPublic: true,
+      }),
+    );
+    await POST(
+      createRequest({
+        title: "비공개글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: [],
+        status: "published",
+        isPublic: false,
+      }),
+    );
+
+    const response = await GET(listRequest());
+    const titles = (await response.json()).map((p: { title: string }) => p.title);
+    expect(titles).toEqual(["공개글"]);
+  });
+
+  it("includes a private post in the list for an authenticated admin", async () => {
+    await POST(
+      createRequest({
+        title: "비공개글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: [],
+        status: "published",
+        isPublic: false,
+      }),
+    );
+
+    const response = await GET(
+      new NextRequest("http://localhost/api/posts", { headers: { Cookie: adminCookieHeader() } }),
+    );
+    const titles = (await response.json()).map((p: { title: string }) => p.title);
+    expect(titles).toEqual(["비공개글"]);
+  });
 });
 
 describe("PUT /api/posts/{id}", () => {

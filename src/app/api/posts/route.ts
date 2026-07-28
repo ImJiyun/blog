@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
   const posts = await prisma.post.findMany({
     where: {
       status,
+      ...(isAdmin(request) ? {} : { isPublic: true }),
       ...(category ? { category } : {}),
       ...(tag ? { tags: { has: tag } } : {}),
       ...(q
