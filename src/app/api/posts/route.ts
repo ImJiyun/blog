@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
       category: body.category,
       tags: body.tags ?? [],
       status: body.status ?? "draft",
+      isPublic: body.isPublic ?? true,
       thumbnailUrl: extractFirstImageUrl(body.bodyMd),
       readMinutes: computeReadMinutes(body.bodyMd),
       publishedAt: body.status === "published" ? new Date() : null,
