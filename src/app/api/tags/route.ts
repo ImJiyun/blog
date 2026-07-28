@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { isAdmin } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   const categoriesParam = request.nextUrl.searchParams.get("categories");
@@ -11,6 +12,7 @@ export async function GET(request: NextRequest) {
   const posts = await prisma.post.findMany({
     where: {
       status: "published",
+      ...(isAdmin(request) ? {} : { isPublic: true }),
       ...(categories ? { category: { in: categories } } : {}),
     },
     select: { tags: true },
