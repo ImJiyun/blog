@@ -72,4 +72,64 @@ describe("GET /api/tags", () => {
     );
     expect(counts).toEqual({ sql: 1, travel: 1 });
   });
+
+  it("excludes a private post's tags for an unauthenticated caller", async () => {
+    await createPost(
+      createRequest({
+        title: "공개글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: ["sql"],
+        status: "published",
+        isPublic: true,
+      }),
+    );
+    await createPost(
+      createRequest({
+        title: "비공개글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: ["secret"],
+        status: "published",
+        isPublic: false,
+      }),
+    );
+
+    const response = await GET(tagsRequest());
+    const counts = Object.fromEntries(
+      (await response.json()).map((row: { tag: string; count: number }) => [row.tag, row.count]),
+    );
+    expect(counts).toEqual({ sql: 1 });
+  });
+
+  it("includes a private post's tags for an authenticated admin", async () => {
+    await createPost(
+      createRequest({
+        title: "공개글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: ["sql"],
+        status: "published",
+        isPublic: true,
+      }),
+    );
+    await createPost(
+      createRequest({
+        title: "비공개글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: ["secret"],
+        status: "published",
+        isPublic: false,
+      }),
+    );
+
+    const response = await GET(
+      new NextRequest("http://localhost/api/tags", { headers: { Cookie: adminCookieHeader() } }),
+    );
+    const counts = Object.fromEntries(
+      (await response.json()).map((row: { tag: string; count: number }) => [row.tag, row.count]),
+    );
+    expect(counts).toEqual({ sql: 1, secret: 1 });
+  });
 });
