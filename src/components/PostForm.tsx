@@ -20,6 +20,7 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
   const [category, setCategory] = useState(initialPost?.category ?? ALL_CATEGORIES[0]);
   const [tagsText, setTagsText] = useState(initialPost?.tags.join(", ") ?? "");
   const [bodyMd, setBodyMd] = useState(initialPost?.bodyMd ?? "");
+  const [isPublic, setIsPublic] = useState(initialPost?.isPublic ?? true);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +69,14 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
     }
     setSaving(true);
     try {
-      const input = { title: title.trim(), bodyMd, category, tags: parseTags(), status };
+      const input = {
+        title: title.trim(),
+        bodyMd,
+        category,
+        tags: parseTags(),
+        status,
+        isPublic,
+      };
       if (initialPost) {
         await updatePost(initialPost.id, input);
       } else {
@@ -121,6 +129,20 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
           data-testid="post-tags-input"
         />
       </label>
+
+      <div className={styles.switchField}>
+        <span>Public</span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={isPublic}
+          onClick={() => setIsPublic((prev) => !prev)}
+          className={styles.switch}
+          data-testid="post-public-toggle"
+        >
+          <span className={isPublic ? `${styles.switchKnob} ${styles.switchKnobOn}` : styles.switchKnob} />
+        </button>
+      </div>
 
       <div className={styles.toolbar}>
         <label className={styles.uploadButton}>
