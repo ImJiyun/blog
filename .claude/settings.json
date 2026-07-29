@@ -1,4 +1,13 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/jiyun/blog log -p --follow -- src/app/api/posts/[id]/comments/route.ts)",
+      "Bash(git -C /Users/jiyun/blog log -p -- src/app/api/auth/login/route.ts)",
+      "Bash(git -C /Users/jiyun/blog log -p -- 'src/app/api/posts/[id]/comments/route.ts')",
+      "Bash(xargs -I{} sh -c 'echo ==={}===; cat {}')",
+      "Bash(cd /Users/jiyun/blk 2>/dev/null; cd /Users/jiyun/blog; sed -n '1,40p' src/app/posts/page.tsx; echo \"---\"; find src/app -name \"not-found.tsx\"; echo \"---layout---\"; cat src/app/layout.tsx 2>/dev/null | head -40)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
@@ -6,8 +15,8 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(gh pr create*)",
             "command": "jq -r '.tool_response.stdout // \"\"' | { out=$(cat); url=$(printf '%s' \"$out\" | grep -oE 'https://github\\.com/[^ /]+/[^ /]+/pull/[0-9]+' | tail -1); if [ -n \"$url\" ]; then jq -n --arg url \"$url\" '{hookSpecificOutput:{hookEventName:\"PostToolUse\",additionalContext:(\"A pull request was just created: \" + $url + \". Project routine: run the code-review skill (code-review:code-review) on this PR now.\")}}'; fi; }",
+            "if": "Bash(gh pr create*)",
             "statusMessage": "Checking for new PR to auto-review..."
           }
         ]
