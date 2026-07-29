@@ -35,7 +35,7 @@ export default function Nav() {
   const minimal = isMinimalHeader(pathname);
 
   return (
-    <header className={styles.header}>
+    <header id="site-nav" className={styles.header}>
       <div className={styles.topBar}>
         <Link href="/" className={styles.wordmark}>
           <span className={styles.wordmarkPrompt}>&gt;</span>jiyun.dev
