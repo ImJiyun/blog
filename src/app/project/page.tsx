@@ -11,7 +11,7 @@ const PROJECTS: Project[] = [
     period: "2026.03 - 현재",
     stack: ["Python", "GCP", "BigQuery"],
     status: "Live",
-    live: "https://github.com/ImJiyun/GateReady",
+    live: "https://public.tableau.com/app/profile/jiyun.kim2059/viz/GateReady/Overview",
     github: "https://github.com/ImJiyun/GateReady",
   },
   {

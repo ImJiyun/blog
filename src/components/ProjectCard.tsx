@@ -25,7 +25,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           {project.status}
         </span>
         <div className={styles.thumbnailFallback}>
-          <span className={styles.categoryLabel}>{project.title}</span>
+          <span className={styles.categoryLabel}>Project</span>
         </div>
       </div>
       <div className={styles.body}>
@@ -44,7 +44,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             <a
               href={project.live}
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
               className={styles.liveLink}
             >
               Live →
@@ -53,7 +53,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           <a
             href={project.github}
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
             className={styles.githubLink}
           >
             GitHub
