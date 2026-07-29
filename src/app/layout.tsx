@@ -3,6 +3,7 @@ import "pretendard/dist/web/static/pretendard.css";
 import "./globals.css";
 import { plexMono } from "./fonts";
 import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "jiyun.dev",
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <Nav />
         {children}
+        <Footer />
       </body>
     </html>
   );

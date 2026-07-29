@@ -12,7 +12,7 @@ const TABS = [
   { label: "Latest", href: "/" },
   { label: "Study", href: "/study" },
   { label: "Life", href: "/life" },
-  { label: "About", href: "/about" },
+  { label: "Project", href: "/project" },
 ];
 
 const GITHUB_URL = "https://github.com/ImJiyun";
@@ -65,6 +65,9 @@ export default function Nav() {
             className={styles.avatarImage}
             priority
           />
+          <p className={styles.avatarTagline}>
+            데이터와 일상을 기록하는 jiyun.dev 입니다.
+          </p>
         </div>
       )}
 
