@@ -48,8 +48,18 @@
 
 .avatar {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
   padding: 0.5rem 1.5rem 1.5rem;
+}
+
+.avatarTagline {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-align: center;
 }
 
 .avatarImage {
