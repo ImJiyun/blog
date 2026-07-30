@@ -15,6 +15,8 @@ export type Post = {
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
+  prevPost: { slug: string; title: string } | null;
+  nextPost: { slug: string; title: string } | null;
 };
 
 export type Comment = {
@@ -56,6 +58,20 @@ export function categorySection(category: string): { label: string; href: string
     return { label: "Study", href: "/study" };
   }
   return { label: "Latest", href: "/" };
+}
+
+export function sectionCategories(category: string): readonly string[] {
+  if ((LIFE_CATEGORIES as readonly string[]).includes(category)) {
+    return LIFE_CATEGORIES;
+  }
+  if ((STUDY_CATEGORIES as readonly string[]).includes(category)) {
+    return STUDY_CATEGORIES;
+  }
+  return ALL_CATEGORIES.filter(
+    (c) =>
+      !(STUDY_CATEGORIES as readonly string[]).includes(c) &&
+      !(LIFE_CATEGORIES as readonly string[]).includes(c),
+  );
 }
 
 function getBaseUrl(): string {

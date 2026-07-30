@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
 import { extractFirstImageUrl, computeReadMinutes } from "@/lib/content";
+import { sectionCategories } from "@/lib/api";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -14,7 +15,24 @@ export async function GET(request: NextRequest, { params }: Params) {
   if ((post.status !== "published" || !post.isPublic) && !isAdmin(request)) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
-  return NextResponse.json(post);
+
+  const neighbors = await prisma.post.findMany({
+    where: {
+      category: { in: [...sectionCategories(post.category)] },
+      status: "published",
+      isPublic: true,
+    },
+    orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+    select: { id: true, slug: true, title: true },
+  });
+  const idx = neighbors.findIndex((n) => n.id === post.id);
+  const prevPost = idx > 0 ? { slug: neighbors[idx - 1].slug, title: neighbors[idx - 1].title } : null;
+  const nextPost =
+    idx >= 0 && idx < neighbors.length - 1
+      ? { slug: neighbors[idx + 1].slug, title: neighbors[idx + 1].title }
+      : null;
+
+  return NextResponse.json({ ...post, prevPost, nextPost });
 }
 
 export async function PUT(request: NextRequest, { params }: Params) {
