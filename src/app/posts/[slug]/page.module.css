@@ -54,6 +54,17 @@
   min-width: 0;
 }
 
+.afterArticle {
+  max-width: calc(100% - 200px - 3rem);
+  min-width: 0;
+}
+
+@media (max-width: 860px) {
+  .afterArticle {
+    max-width: 100%;
+  }
+}
+
 .hero {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -79,6 +90,7 @@
 .tags {
   list-style: none;
   display: flex;
+  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
   padding: 0;

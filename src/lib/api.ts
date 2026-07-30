@@ -15,6 +15,12 @@ export type Post = {
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
+};
+
+// The shape returned only by GET /api/posts/{slug} (getPost()) — list responses
+// (getPosts()) and write responses (createPost()/updatePost()) don't include
+// these neighbor fields, so they stay off the base Post type.
+export type PostDetail = Post & {
   prevPost: { slug: string; title: string } | null;
   nextPost: { slug: string; title: string } | null;
 };
@@ -121,7 +127,7 @@ export async function getPosts(params: GetPostsParams = {}): Promise<Post[]> {
   return response.json();
 }
 
-export async function getPost(slug: string): Promise<Post | null> {
+export async function getPost(slug: string): Promise<PostDetail | null> {
   // Next's dynamic route params arrive still percent-encoded for non-ASCII
   // segments (verified against this Next/Turbopack version) — decode first so
   // a Korean slug isn't encoded twice, which would 404 against the backend.

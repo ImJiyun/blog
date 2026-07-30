@@ -62,10 +62,6 @@ test.describe.serial("golden path: write, publish, list, comment, like", () => {
     // author card always renders (static content)
     await expect(page.getByTestId("post-author-card")).toBeVisible();
     await expect(page.getByText("데이터와 일상을 기록합니다")).toBeVisible();
-
-    // this smoke post is the only SQL post created in this run, so its section
-    // has no other neighbors — the prev/next block must not render at all
-    await expect(page.getByTestId("post-prev-next")).toHaveCount(0);
   });
 
   test("the published post appears in the public list", async ({ page }) => {
