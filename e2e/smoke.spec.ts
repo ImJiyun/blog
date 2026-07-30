@@ -45,6 +45,29 @@ test.describe.serial("golden path: write, publish, list, comment, like", () => {
     );
   });
 
+  test("the detail page shows the redesigned layout", async ({ page }) => {
+    await page.goto("/posts");
+    await page.getByText(POST_TITLE).click();
+    await expect(page).toHaveURL(/\/posts\//);
+
+    // subtitle rendered
+    await expect(page.getByText("스모크 테스트용 부제입니다")).toBeVisible();
+
+    // tags rendered above the title, not just at the bottom of the article —
+    // this post was tagged "smoke, playwright" at creation time
+    const tagsBlock = page.getByTestId("post-tags");
+    await expect(tagsBlock).toBeVisible();
+    await expect(tagsBlock.getByText("#smoke")).toBeVisible();
+
+    // author card always renders (static content)
+    await expect(page.getByTestId("post-author-card")).toBeVisible();
+    await expect(page.getByText("데이터와 일상을 기록합니다")).toBeVisible();
+
+    // this smoke post is the only SQL post created in this run, so its section
+    // has no other neighbors — the prev/next block must not render at all
+    await expect(page.getByTestId("post-prev-next")).toHaveCount(0);
+  });
+
   test("the published post appears in the public list", async ({ page }) => {
     await page.goto("/posts");
     await expect(page.getByText(POST_TITLE)).toBeVisible();

@@ -1,0 +1,29 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+}
+
+.avatar {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.name {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.bio {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin: 0.2rem 0 0;
+}

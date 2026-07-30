@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPost, getComments, categorySection } from "@/lib/api";
@@ -7,6 +8,8 @@ import TableOfContents from "@/components/TableOfContents";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CommentSection from "@/components/CommentSection";
 import LikeButton from "@/components/LikeButton";
+import PostAuthorCard from "@/components/PostAuthorCard";
+import PostPrevNextNav from "@/components/PostPrevNextNav";
 import styles from "./page.module.css";
 
 function formatDate(iso: string | null): string {
@@ -46,7 +49,36 @@ export default async function PostDetailPage({
           <p className={styles.breadcrumb}>
             <Link href={categorySection(post.category).href}>{categorySection(post.category).label}</Link> / {post.category}
           </p>
+
+          {post.thumbnailUrl && (
+            <div className={styles.hero}>
+              <Image
+                src={post.thumbnailUrl}
+                alt=""
+                fill
+                sizes="(max-width: 960px) 100vw, 960px"
+                className={styles.heroImage}
+              />
+            </div>
+          )}
+
+          {post.tags.length > 0 && (
+            <ul className={styles.tags} data-testid="post-tags">
+              {post.tags.map((tag) => (
+                <li key={tag}>
+                  <Link
+                    href={`/posts?tag=${encodeURIComponent(tag)}`}
+                    className={styles.tagLink}
+                  >
+                    #{tag}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+
           <h1 className={styles.title}>{post.title}</h1>
+          {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
           <p className={styles.meta}>
             {formatDate(post.publishedAt)} · {post.readMinutes} min read
           </p>
@@ -55,27 +87,18 @@ export default async function PostDetailPage({
         <div className={styles.layout}>
           <article id="article-body" className={styles.article}>
             <MarkdownBody bodyMd={post.bodyMd} />
-
-            {post.tags.length > 0 && (
-              <ul className={styles.tags}>
-                {post.tags.map((tag) => (
-                  <li key={tag}>
-                    <Link
-                      href={`/posts?tag=${encodeURIComponent(tag)}`}
-                      className={styles.tagLink}
-                    >
-                      #{tag}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <LikeButton postId={post.id} />
-            <CommentSection postId={post.id} initialComments={comments} />
           </article>
 
           <TableOfContents headings={headings} />
+        </div>
+
+        <PostPrevNextNav prevPost={post.prevPost} nextPost={post.nextPost} />
+
+        <PostAuthorCard />
+
+        <div className={styles.article}>
+          <LikeButton postId={post.id} />
+          <CommentSection postId={post.id} initialComments={comments} />
         </div>
       </main>
     </>
