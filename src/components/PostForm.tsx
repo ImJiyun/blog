@@ -17,6 +17,7 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [title, setTitle] = useState(initialPost?.title ?? "");
+  const [subtitle, setSubtitle] = useState(initialPost?.subtitle ?? "");
   const [category, setCategory] = useState(initialPost?.category ?? ALL_CATEGORIES[0]);
   const [tagsText, setTagsText] = useState(initialPost?.tags.join(", ") ?? "");
   const [bodyMd, setBodyMd] = useState(initialPost?.bodyMd ?? "");
@@ -71,6 +72,7 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
     try {
       const input = {
         title: title.trim(),
+        subtitle: subtitle.trim() || null,
         bodyMd,
         category,
         tags: parseTags(),
@@ -102,6 +104,16 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           data-testid="post-title-input"
+        />
+      </label>
+
+      <label className={styles.field}>
+        <span>Subtitle (optional)</span>
+        <input
+          type="text"
+          value={subtitle}
+          onChange={(e) => setSubtitle(e.target.value)}
+          data-testid="post-subtitle-input"
         />
       </label>
 
