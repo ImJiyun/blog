@@ -553,3 +553,66 @@ describe("GET /api/posts/{slug}", () => {
     expect((await response.json()).isPublic).toBe(false);
   });
 });
+
+describe("GET /api/posts/{slug} — prev/next", () => {
+  async function publish(title: string, category: string, extra: Record<string, unknown> = {}) {
+    const create = await POST(
+      createRequest({ title, bodyMd: "본문", category, tags: [], status: "published", ...extra }),
+    );
+    return create.json();
+  }
+
+  it("finds prev/next within the same section, ordered by publishedAt", async () => {
+    // resetDb() truncates between tests, but not between these three creates —
+    // publishedAt is set at creation time (server clock), so create oldest first.
+    const older = await publish("옛날 SQL 글", "SQL");
+    const middle = await publish("가운데 Python 글", "Python");
+    const newer = await publish("최신 Statistics 글", "Statistics");
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(middle.slug));
+    const body = await response.json();
+    expect(body.prevPost).toEqual({ slug: newer.slug, title: newer.title });
+    expect(body.nextPost).toEqual({ slug: older.slug, title: older.title });
+  });
+
+  it("does not cross section boundaries", async () => {
+    const study = await publish("공부 글", "SQL");
+    await publish("여행 글", "Travel");
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(study.slug));
+    const body = await response.json();
+    expect(body.prevPost).toBeNull();
+    expect(body.nextPost).toBeNull();
+  });
+
+  it("returns null on both sides for the only post in its section", async () => {
+    const only = await publish("혼자인 글", "SQL");
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(only.slug));
+    const body = await response.json();
+    expect(body.prevPost).toBeNull();
+    expect(body.nextPost).toBeNull();
+  });
+
+  it("excludes private posts from being a neighbor, even for an admin viewer", async () => {
+    const pub1 = await publish("공개 글 1", "SQL");
+    await publish("비공개 글", "Python", { isPublic: false });
+    const pub2 = await publish("공개 글 2", "Statistics");
+
+    const response = await GET_ONE(
+      new NextRequest("http://localhost", { headers: { Cookie: adminCookieHeader() } }),
+      params(pub1.slug),
+    );
+    const body = await response.json();
+    expect(body.prevPost).toEqual({ slug: pub2.slug, title: pub2.title });
+  });
+
+  it("excludes drafts from being a neighbor", async () => {
+    const pub = await publish("발행 글", "SQL");
+    await POST(
+      createRequest({ title: "초안 글", bodyMd: "x", category: "Python", tags: [], status: "draft" }),
+    );
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(pub.slug));
+    expect((await response.json()).prevPost).toBeNull();
+  });
+});
