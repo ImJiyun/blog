@@ -12,6 +12,7 @@ model Post {
   title        String
   slug         String    @unique
   bodyMd       String    @map("body_md")
+  subtitle     String?   @map("subtitle")
   thumbnailUrl String?   @map("thumbnail_url")
   readMinutes  Int       @default(1) @map("read_minutes")
   category     String

@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
       bodyMd: body.bodyMd,
       category: body.category,
       tags: body.tags ?? [],
+      subtitle: body.subtitle ?? null,
       status: body.status ?? "draft",
       isPublic: body.isPublic ?? true,
       thumbnailUrl: extractFirstImageUrl(body.bodyMd),
