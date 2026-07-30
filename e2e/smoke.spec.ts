@@ -22,6 +22,7 @@ test.describe.serial("golden path: write, publish, list, comment, like", () => {
     await expect(page).toHaveURL(/\/admin\/posts\/new$/);
 
     await page.getByTestId("post-title-input").fill(POST_TITLE);
+    await page.getByTestId("post-subtitle-input").fill("스모크 테스트용 부제입니다");
     await page.getByTestId("post-category-select").selectOption("SQL");
     await page.getByTestId("post-tags-input").fill("smoke, playwright");
     await page
@@ -31,6 +32,17 @@ test.describe.serial("golden path: write, publish, list, comment, like", () => {
 
     await expect(page).toHaveURL(/\/admin\/posts$/);
     await expect(page.getByText(POST_TITLE)).toBeVisible();
+  });
+
+  test("the subtitle round-trips through the edit form", async ({ page }) => {
+    await page.goto("/admin/login");
+    await page.getByTestId("password-input").fill(ADMIN_PASSWORD);
+    await page.getByTestId("login-submit").click();
+    await page.goto("/admin/posts");
+    await page.getByText(POST_TITLE).click();
+    await expect(page.getByTestId("post-subtitle-input")).toHaveValue(
+      "스모크 테스트용 부제입니다",
+    );
   });
 
   test("the published post appears in the public list", async ({ page }) => {
