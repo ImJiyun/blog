@@ -83,21 +83,30 @@ export default async function PostDetailPage({
           </p>
         </div>
 
-        <div className={styles.layout}>
-          <article id="article-body" className={styles.article}>
-            <MarkdownBody bodyMd={post.bodyMd} />
-          </article>
+        {/* id="article-body" spans everything ScrollProgressBar should track —
+            article prose through comments — so the bar still reaches 100% at
+            the true bottom of substantive content, not partway down the page
+            (see content-platform-design.md's scroll-progress rationale: "so
+            the nav/footer don't skew it" — prev/next nav, the author card,
+            likes, and comments are content, not nav/footer, unlike the page
+            header above this point). */}
+        <div id="article-body">
+          <div className={styles.layout}>
+            <article className={styles.article}>
+              <MarkdownBody bodyMd={post.bodyMd} />
+            </article>
 
-          <TableOfContents headings={headings} />
-        </div>
+            <TableOfContents headings={headings} />
+          </div>
 
-        <PostPrevNextNav prevPost={post.prevPost} nextPost={post.nextPost} />
+          <PostPrevNextNav prevPost={post.prevPost} nextPost={post.nextPost} />
 
-        <PostAuthorCard />
+          <PostAuthorCard />
 
-        <div className={styles.afterArticle}>
-          <LikeButton postId={post.id} />
-          <CommentSection postId={post.id} initialComments={comments} />
+          <div className={styles.afterArticle}>
+            <LikeButton postId={post.id} />
+            <CommentSection postId={post.id} initialComments={comments} />
+          </div>
         </div>
       </main>
     </>
