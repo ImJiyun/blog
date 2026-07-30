@@ -575,6 +575,20 @@ describe("GET /api/posts/{slug} — prev/next", () => {
     expect(body.nextPost).toEqual({ slug: older.slug, title: older.title });
   });
 
+  it("returns null prevPost (with a non-null nextPost) when queried on the newest post in a multi-item section", async () => {
+    // Distinct from the "only post in its section" case below: here the section has
+    // 3 posts, so this exercises the idx > 0 guard actually evaluating false at idx 0,
+    // rather than collapsing with the idx < length - 1 guard on a single-item list.
+    await publish("옛날 SQL 글", "SQL");
+    const middle = await publish("가운데 Python 글", "Python");
+    const newest = await publish("최신 Statistics 글", "Statistics");
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(newest.slug));
+    const body = await response.json();
+    expect(body.prevPost).toBeNull();
+    expect(body.nextPost).toEqual({ slug: middle.slug, title: middle.title });
+  });
+
   it("does not cross section boundaries", async () => {
     const study = await publish("공부 글", "SQL");
     await publish("여행 글", "Travel");
