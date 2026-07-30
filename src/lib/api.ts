@@ -47,6 +47,16 @@ export const LATEST_CATEGORIES: readonly string[] = ALL_CATEGORIES.filter(
   (c) => !(LIFE_CATEGORIES as readonly string[]).includes(c),
 );
 
+export function categorySection(category: string): { label: string; href: string } {
+  if ((LIFE_CATEGORIES as readonly string[]).includes(category)) {
+    return { label: "Life", href: "/life" };
+  }
+  if ((STUDY_CATEGORIES as readonly string[]).includes(category)) {
+    return { label: "Study", href: "/study" };
+  }
+  return { label: "Latest", href: "/" };
+}
+
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 }
