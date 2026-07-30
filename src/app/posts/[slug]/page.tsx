@@ -95,7 +95,7 @@ export default async function PostDetailPage({
 
         <PostAuthorCard />
 
-        <div className={styles.article}>
+        <div className={styles.afterArticle}>
           <LikeButton postId={post.id} />
           <CommentSection postId={post.id} initialComments={comments} />
         </div>
