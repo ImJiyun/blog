@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPost, getComments } from "@/lib/api";
+import { getPost, getComments, categorySection } from "@/lib/api";
 import { extractHeadings } from "@/lib/toc";
 import MarkdownBody from "@/components/MarkdownBody";
 import TableOfContents from "@/components/TableOfContents";
@@ -44,7 +44,7 @@ export default async function PostDetailPage({
       <main className={styles.page}>
         <div className={styles.head}>
           <p className={styles.breadcrumb}>
-            <Link href="/posts">Posts</Link> / {post.category}
+            <Link href={categorySection(post.category).href}>{categorySection(post.category).label}</Link> / {post.category}
           </p>
           <h1 className={styles.title}>{post.title}</h1>
           <p className={styles.meta}>
