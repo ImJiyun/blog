@@ -77,10 +77,10 @@
 }
 
 .meta {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-weight: 500;
   font-size: 0.8rem;
-  color: var(--ink-soft);
+  color: var(--accent);
   display: flex;
   gap: 0.4rem;
   align-items: center;
@@ -93,7 +93,7 @@
 }
 
 .tagPill {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-weight: 500;
   font-size: 0.75rem;
   color: var(--ink-soft);
