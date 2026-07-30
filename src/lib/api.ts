@@ -5,6 +5,7 @@ export type Post = {
   title: string;
   slug: string;
   bodyMd: string;
+  subtitle: string | null;
   thumbnailUrl: string | null;
   readMinutes: number;
   category: string;
@@ -194,6 +195,7 @@ export async function deletePost(id: string): Promise<void> {
 export type PostInput = {
   title: string;
   bodyMd: string;
+  subtitle: string | null;
   category: string;
   tags: string[];
   status: PostStatus;

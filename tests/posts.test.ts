@@ -240,6 +240,33 @@ describe("POST /api/posts", () => {
     expect((await create.json()).isPublic).toBe(false);
   });
 
+  it("persists an optional subtitle", async () => {
+    const create = await POST(
+      createRequest({
+        title: "부제 있는 글",
+        bodyMd: "본문",
+        category: "SQL",
+        tags: [],
+        status: "published",
+        subtitle: "짧은 한 줄 설명",
+      }),
+    );
+    expect((await create.json()).subtitle).toBe("짧은 한 줄 설명");
+  });
+
+  it("defaults subtitle to null when omitted", async () => {
+    const create = await POST(
+      createRequest({
+        title: "부제 없는 글",
+        bodyMd: "본문",
+        category: "SQL",
+        tags: [],
+        status: "published",
+      }),
+    );
+    expect((await create.json()).subtitle).toBeNull();
+  });
+
   it("excludes a private post from the list for an unauthenticated caller", async () => {
     await POST(
       createRequest({
@@ -401,6 +428,37 @@ describe("PUT /api/posts/{id}", () => {
       params(postId),
     );
     expect((await update.json()).isPublic).toBe(false);
+  });
+
+  it("updates the subtitle", async () => {
+    const create = await POST(
+      createRequest({
+        title: "원제목",
+        bodyMd: "원본",
+        category: "SQL",
+        tags: [],
+        status: "draft",
+        subtitle: "원래 부제",
+      }),
+    );
+    const postId = (await create.json()).id;
+
+    const update = await PUT(
+      new NextRequest("http://localhost", {
+        method: "PUT",
+        body: JSON.stringify({
+          title: "원제목",
+          bodyMd: "원본",
+          category: "SQL",
+          tags: [],
+          status: "draft",
+          subtitle: "수정된 부제",
+        }),
+        headers: { "Content-Type": "application/json", Cookie: adminCookieHeader() },
+      }),
+      params(postId),
+    );
+    expect((await update.json()).subtitle).toBe("수정된 부제");
   });
 });
 
