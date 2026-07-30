@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPost, getComments, categorySection } from "@/lib/api";
@@ -52,13 +51,13 @@ export default async function PostDetailPage({
 
           {post.thumbnailUrl && (
             <div className={styles.hero}>
-              <Image
-                src={post.thumbnailUrl}
-                alt=""
-                fill
-                sizes="(max-width: 960px) 100vw, 960px"
-                className={styles.heroImage}
-              />
+              {/* thumbnailUrl is the first image URL found in the post's markdown
+                  body (extractFirstImageUrl) — an arbitrary external host, not a
+                  fixed bucket. A plain <img> avoids maintaining a next/image
+                  remotePatterns allowlist for hosts we don't control (same
+                  reasoning as PostCard.tsx). */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={post.thumbnailUrl} alt="" className={styles.heroImage} />
             </div>
           )}
 
