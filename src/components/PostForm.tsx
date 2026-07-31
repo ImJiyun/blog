@@ -172,10 +172,10 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
         </label>
       </div>
 
-      <div className={styles.field}>
-        <span>Body (Markdown)</span>
+      <div className={styles.bodyField}>
+        <span className={styles.bodyLabel}>Body (Markdown)</span>
+        <MarkdownEditor ref={textareaRef} value={bodyMd} onChange={setBodyMd} />
       </div>
-      <MarkdownEditor ref={textareaRef} value={bodyMd} onChange={setBodyMd} />
 
       <div className={styles.actions}>
         <button

@@ -2,13 +2,29 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  max-width: 720px;
+  max-width: 1100px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  max-width: 720px;
+}
+
+.bodyField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bodyLabel {
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: 0.75rem;
@@ -41,6 +57,7 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--ink-soft);
+  max-width: 720px;
 }
 
 .switch {
@@ -73,6 +90,7 @@
 
 .toolbar {
   display: flex;
+  max-width: 720px;
 }
 
 .uploadButton {
@@ -102,6 +120,7 @@
 .actions {
   display: flex;
   gap: 0.75rem;
+  max-width: 720px;
 }
 
 .actions button {
