@@ -15,7 +15,6 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--ink-soft);
-  max-width: 720px;
 }
 
 .bodyField {
@@ -57,7 +56,6 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--ink-soft);
-  max-width: 720px;
 }
 
 .switch {
@@ -90,7 +88,6 @@
 
 .toolbar {
   display: flex;
-  max-width: 720px;
 }
 
 .uploadButton {
@@ -120,7 +117,6 @@
 .actions {
   display: flex;
   gap: 0.75rem;
-  max-width: 720px;
 }
 
 .actions button {
