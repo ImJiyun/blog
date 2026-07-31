@@ -38,6 +38,7 @@ test.describe.serial("golden path: write, publish, list, comment, like", () => {
     await page.goto("/admin/login");
     await page.getByTestId("password-input").fill(ADMIN_PASSWORD);
     await page.getByTestId("login-submit").click();
+    await expect(page).toHaveURL(/\/admin\/posts$/);
     await page.goto("/admin/posts");
     await page.getByText(POST_TITLE).click();
     await expect(page.getByTestId("post-subtitle-input")).toHaveValue(
