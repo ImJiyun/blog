@@ -18,6 +18,7 @@ const MarkdownEditor = forwardRef<HTMLTextAreaElement, Props>(
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={styles.textarea}
+          aria-label="Body (Markdown)"
           data-testid="post-body-textarea"
         />
         <div className={styles.preview} data-testid="post-body-preview">
