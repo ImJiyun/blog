@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { createComment } from "@/lib/api";
 import type { Comment } from "@/lib/api";
+import { formatRelativeTime } from "@/lib/relativeTime";
 import styles from "./CommentSection.module.css";
 
 type Props = { postId: string; initialComments: Comment[] };
@@ -33,9 +34,7 @@ function CommentNode({
     <li className={styles.item}>
       <div className={styles.itemHeader}>
         <span className={styles.author}>{comment.authorName}</span>
-        <span className={styles.date}>
-          {new Date(comment.createdAt).toLocaleDateString("ko-KR")}
-        </span>
+        <span className={styles.date}>{formatRelativeTime(comment.createdAt)}</span>
       </div>
       <p className={styles.commentBody}>{comment.body}</p>
       <button
@@ -43,7 +42,7 @@ function CommentNode({
         className={styles.replyButton}
         onClick={() => onReply(comment.id)}
       >
-        Reply
+        답글
       </button>
       {replies.length > 0 && (
         <ul className={styles.replies}>
@@ -99,7 +98,36 @@ export default function CommentSection({ postId, initialComments }: Props) {
 
   return (
     <section className={styles.section} aria-label="Comments">
-      <h2 className={styles.heading}>Comments ({comments.length})</h2>
+      <h2 className={styles.heading}>댓글 {comments.length}</h2>
+
+      <form className={styles.form} onSubmit={handleSubmit} data-testid="comment-form">
+        {replyTo && (
+          <div className={styles.replyingTo}>
+            답글을 작성 중입니다.{" "}
+            <button type="button" onClick={() => setReplyTo(null)}>
+              취소
+            </button>
+          </div>
+        )}
+        <input
+          type="text"
+          placeholder="이름"
+          value={authorName}
+          onChange={(e) => setAuthorName(e.target.value)}
+          data-testid="comment-author-input"
+        />
+        <textarea
+          placeholder="댓글을 남겨보세요"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          rows={3}
+          data-testid="comment-body-input"
+        />
+        {error && <p className={styles.error}>{error}</p>}
+        <button type="submit" disabled={submitting} data-testid="comment-submit">
+          {submitting ? "등록 중..." : "등록"}
+        </button>
+      </form>
 
       {roots.length === 0 ? (
         <p className={styles.empty}>No comments yet.</p>
@@ -115,35 +143,6 @@ export default function CommentSection({ postId, initialComments }: Props) {
           ))}
         </ul>
       )}
-
-      <form className={styles.form} onSubmit={handleSubmit} data-testid="comment-form">
-        {replyTo && (
-          <div className={styles.replyingTo}>
-            Replying to a comment.{" "}
-            <button type="button" onClick={() => setReplyTo(null)}>
-              Cancel
-            </button>
-          </div>
-        )}
-        <input
-          type="text"
-          placeholder="Name"
-          value={authorName}
-          onChange={(e) => setAuthorName(e.target.value)}
-          data-testid="comment-author-input"
-        />
-        <textarea
-          placeholder="Write a comment"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          rows={3}
-          data-testid="comment-body-input"
-        />
-        {error && <p className={styles.error}>{error}</p>}
-        <button type="submit" disabled={submitting} data-testid="comment-submit">
-          {submitting ? "Posting..." : "Post Comment"}
-        </button>
-      </form>
     </section>
   );
 }
