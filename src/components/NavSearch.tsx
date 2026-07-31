@@ -65,12 +65,13 @@ export default function NavSearch() {
 
   return (
     <form role="search" className={styles.searchForm} onSubmit={handleSubmit}>
+      <span aria-hidden="true" className={styles.searchIcon} />
       <input
         type="search"
         value={query}
         onChange={handleChange}
-        placeholder="Search posts"
-        aria-label="Search posts"
+        placeholder="전체 글 검색"
+        aria-label="전체 글 검색"
         data-testid="nav-search-input"
         className={styles.searchInput}
       />
