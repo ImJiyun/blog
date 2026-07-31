@@ -18,8 +18,7 @@
 }
 
 .field input,
-.field select,
-.field textarea {
+.field select {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0.6rem 0.75rem;
@@ -30,13 +29,6 @@
   letter-spacing: normal;
   color: var(--ink);
   background: var(--bg);
-}
-
-.field textarea {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  line-height: 1.6;
-  resize: vertical;
 }
 
 .switchField {
