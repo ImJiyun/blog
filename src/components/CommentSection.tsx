@@ -34,7 +34,7 @@ function CommentNode({
     <li className={styles.item}>
       <div className={styles.itemHeader}>
         <span className={styles.author}>{comment.authorName}</span>
-        <span className={styles.date}>{formatRelativeTime(comment.createdAt)}</span>
+        <span className={styles.date} suppressHydrationWarning>{formatRelativeTime(comment.createdAt)}</span>
       </div>
       <p className={styles.commentBody}>{comment.body}</p>
       <button
@@ -97,7 +97,7 @@ export default function CommentSection({ postId, initialComments }: Props) {
   }
 
   return (
-    <section className={styles.section} aria-label="Comments">
+    <section className={styles.section} aria-label="댓글">
       <h2 className={styles.heading}>댓글 {comments.length}</h2>
 
       <form className={styles.form} onSubmit={handleSubmit} data-testid="comment-form">
@@ -130,7 +130,7 @@ export default function CommentSection({ postId, initialComments }: Props) {
       </form>
 
       {roots.length === 0 ? (
-        <p className={styles.empty}>No comments yet.</p>
+        <p className={styles.empty}>아직 댓글이 없습니다.</p>
       ) : (
         <ul className={styles.list}>
           {roots.map((comment) => (
