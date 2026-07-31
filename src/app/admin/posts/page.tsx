@@ -40,7 +40,9 @@ export default async function AdminPostsPage() {
           <tbody>
             {posts.map((post) => (
               <tr key={post.id} data-testid="admin-post-row">
-                <td>{post.title}</td>
+                <td>
+                  <Link href={`/admin/posts/${post.slug}/edit`}>{post.title}</Link>
+                </td>
                 <td>{post.category}</td>
                 <td className={post.status === "draft" ? styles.draft : styles.published}>
                   {post.status}
