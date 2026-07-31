@@ -11,6 +11,7 @@ import {
 } from "@/lib/api";
 import type { Post, PostStatus } from "@/lib/api";
 import styles from "./PostForm.module.css";
+import MarkdownEditor from "./MarkdownEditor";
 
 export default function PostForm({ initialPost }: { initialPost?: Post }) {
   const router = useRouter();
@@ -171,16 +172,10 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
         </label>
       </div>
 
-      <label className={styles.field}>
+      <div className={styles.field}>
         <span>Body (Markdown)</span>
-        <textarea
-          ref={textareaRef}
-          value={bodyMd}
-          onChange={(e) => setBodyMd(e.target.value)}
-          rows={20}
-          data-testid="post-body-textarea"
-        />
-      </label>
+      </div>
+      <MarkdownEditor ref={textareaRef} value={bodyMd} onChange={setBodyMd} />
 
       <div className={styles.actions}>
         <button
