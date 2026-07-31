@@ -23,6 +23,8 @@ export type Post = {
 export type PostDetail = Post & {
   prevPost: { slug: string; title: string } | null;
   nextPost: { slug: string; title: string } | null;
+  likeCount: number;
+  liked: boolean;
 };
 
 export type Comment = {
