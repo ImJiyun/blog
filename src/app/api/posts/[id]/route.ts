@@ -32,7 +32,21 @@ export async function GET(request: NextRequest, { params }: Params) {
       ? { slug: neighbors[idx + 1].slug, title: neighbors[idx + 1].title }
       : null;
 
-  return NextResponse.json({ ...post, prevPost, nextPost });
+  const visitorId = request.cookies.get("visitor_id")?.value;
+  const [likeCount, likedByVisitor] = await Promise.all([
+    prisma.like.count({ where: { postId: post.id } }),
+    visitorId
+      ? prisma.like.findUnique({ where: { postId_visitorId: { postId: post.id, visitorId } } })
+      : Promise.resolve(null),
+  ]);
+
+  return NextResponse.json({
+    ...post,
+    prevPost,
+    nextPost,
+    likeCount,
+    liked: !!likedByVisitor,
+  });
 }
 
 export async function PUT(request: NextRequest, { params }: Params) {

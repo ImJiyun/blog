@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 import { GET, POST } from "@/app/api/posts/route";
 import { GET as GET_ONE, PUT, DELETE } from "@/app/api/posts/[id]/route";
+import { POST as toggleLike } from "@/app/api/posts/[id]/likes/route";
 import { resetDb } from "./helpers/db";
 import { adminCookieHeader } from "./helpers/auth";
 
@@ -628,5 +629,66 @@ describe("GET /api/posts/{slug} — prev/next", () => {
 
     const response = await GET_ONE(new NextRequest("http://localhost"), params(pub.slug));
     expect((await response.json()).prevPost).toBeNull();
+  });
+});
+
+async function createPublishedPost(): Promise<{ id: string; slug: string }> {
+  const response = await POST(
+    createRequest({
+      title: "좋아요 카운트 테스트",
+      bodyMd: "본문",
+      category: "SQL",
+      tags: [],
+      status: "published",
+    }),
+  );
+  return response.json();
+}
+
+describe("GET /api/posts/{slug} — like count", () => {
+  it("returns likeCount 0 and liked false for a post no one has liked", async () => {
+    const post = await createPublishedPost();
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(post.slug));
+    const body = await response.json();
+    expect(body.likeCount).toBe(0);
+    expect(body.liked).toBe(false);
+  });
+
+  it("reflects an existing like from the requesting visitor", async () => {
+    const post = await createPublishedPost();
+    await toggleLike(
+      new NextRequest("http://localhost", { method: "POST", headers: { Cookie: "visitor_id=visitor-1" } }),
+      params(post.id),
+    );
+
+    const response = await GET_ONE(
+      new NextRequest("http://localhost", { headers: { Cookie: "visitor_id=visitor-1" } }),
+      params(post.slug),
+    );
+    const body = await response.json();
+    expect(body.likeCount).toBe(1);
+    expect(body.liked).toBe(true);
+  });
+
+  it("counts likes from other visitors but reports liked=false for a visitor who hasn't liked", async () => {
+    const post = await createPublishedPost();
+    await toggleLike(
+      new NextRequest("http://localhost", { method: "POST", headers: { Cookie: "visitor_id=visitor-1" } }),
+      params(post.id),
+    );
+
+    const response = await GET_ONE(
+      new NextRequest("http://localhost", { headers: { Cookie: "visitor_id=visitor-2" } }),
+      params(post.slug),
+    );
+    const body = await response.json();
+    expect(body.likeCount).toBe(1);
+    expect(body.liked).toBe(false);
+  });
+
+  it("reports liked=false when the request carries no visitor_id cookie", async () => {
+    const post = await createPublishedPost();
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(post.slug));
+    expect((await response.json()).liked).toBe(false);
   });
 });
