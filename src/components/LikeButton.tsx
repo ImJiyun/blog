@@ -4,18 +4,28 @@ import { useState } from "react";
 import { toggleLike } from "@/lib/api";
 import styles from "./LikeButton.module.css";
 
-export default function LikeButton({ postId }: { postId: string }) {
-  const [liked, setLiked] = useState(false);
+type Props = { postId: string; initialLiked: boolean; initialLikeCount: number };
+
+export default function LikeButton({ postId, initialLiked, initialLikeCount }: Props) {
+  const [liked, setLiked] = useState(initialLiked);
+  const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [pending, setPending] = useState(false);
 
   async function handleClick() {
     if (pending) return;
     setPending(true);
+    const prevLiked = liked;
+    const prevCount = likeCount;
+    setLiked(!prevLiked);
+    setLikeCount(prevLiked ? prevCount - 1 : prevCount + 1);
     try {
       const result = await toggleLike(postId);
       setLiked(result.liked);
+      setLikeCount(result.liked ? prevCount + 1 : prevCount - 1);
     } catch {
-      // best-effort UI — a failed toggle just leaves the button's state unchanged
+      // best-effort UI — a failed toggle rolls back to the pre-click state
+      setLiked(prevLiked);
+      setLikeCount(prevCount);
     } finally {
       setPending(false);
     }
@@ -31,7 +41,7 @@ export default function LikeButton({ postId }: { postId: string }) {
       data-testid="like-button"
     >
       <span aria-hidden="true" className={liked ? `${styles.dot} ${styles.dotLiked}` : styles.dot} />
-      {liked ? "Liked" : "Like"}
+      좋아요 {likeCount}
     </button>
   );
 }
