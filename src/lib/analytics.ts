@@ -2,8 +2,9 @@ import { sendGAEvent } from "@next/third-parties/google";
 
 export function trackEvent(name: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
-  const w = window as unknown as { dataLayer?: unknown[] };
-  if (!Array.isArray(w.dataLayer)) return;
+  // sendGAEvent already no-ops with a console.warn if the GA script hasn't
+  // initialized dataLayer yet — don't duplicate that check silently here,
+  // or a dropped event before GA loads goes unlogged.
   sendGAEvent("event", name, params ?? {});
 }
 

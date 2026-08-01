@@ -43,11 +43,15 @@ export default function PostEngagementTracker({ postSlug }: { postSlug: string }
       window.requestAnimationFrame(measureScroll);
     }
 
-    function handleVisibilityChange() {
-      if (document.visibilityState !== "hidden" || readingSentRef.current) return;
+    function sendReadingTime() {
+      if (readingSentRef.current) return;
       readingSentRef.current = true;
       const seconds = computeReadingSeconds(startRef.current, Date.now());
       trackEvent("reading_time", { seconds, post_slug: postSlug });
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "hidden") sendReadingTime();
     }
 
     measureScroll();
@@ -56,6 +60,10 @@ export default function PostEngagementTracker({ postSlug }: { postSlug: string }
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      // SPA navigation to another post (RelatedPosts, prev/next) never fires
+      // visibilitychange, so flush here too or reading_time is lost on the
+      // most common exit path.
+      sendReadingTime();
     };
   }, [postSlug]);
 
