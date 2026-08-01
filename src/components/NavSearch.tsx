@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import styles from "./Nav.module.css";
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -40,6 +41,9 @@ export default function NavSearch() {
     const v = value.trim();
     const onPosts = pathname === "/posts";
     if (!v && !onPosts) return; // nothing to clear, don't navigate away
+    if (v) {
+      trackEvent("search", { search_term: v });
+    }
     const next = new URLSearchParams(onPosts ? searchParams.toString() : "");
     if (v) {
       next.set("q", v);
