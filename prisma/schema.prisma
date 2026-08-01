@@ -50,3 +50,12 @@ model Like {
   @@unique([postId, visitorId])
   @@map("likes")
 }
+
+model LoginAttempt {
+  ip          String    @id
+  failedCount Int       @default(0) @map("failed_count")
+  lockedUntil DateTime? @map("locked_until")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("login_attempts")
+}
