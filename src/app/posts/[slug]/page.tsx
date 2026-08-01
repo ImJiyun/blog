@@ -11,6 +11,7 @@ import LikeButton from "@/components/LikeButton";
 import PostAuthorCard from "@/components/PostAuthorCard";
 import RelatedPosts from "@/components/RelatedPosts";
 import PostPrevNextNav from "@/components/PostPrevNextNav";
+import PostTagLinks from "@/components/PostTagLinks";
 import styles from "./page.module.css";
 
 function formatDate(iso: string | null): string {
@@ -64,20 +65,7 @@ export default async function PostDetailPage({
             </div>
           )}
 
-          {post.tags.length > 0 && (
-            <ul className={styles.tags} data-testid="post-tags">
-              {post.tags.map((tag) => (
-                <li key={tag}>
-                  <Link
-                    href={`/posts?tag=${encodeURIComponent(tag)}`}
-                    className={styles.tagLink}
-                  >
-                    #{tag}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <PostTagLinks tags={post.tags} />
 
           <h1 className={styles.title}>{post.title}</h1>
           {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
