@@ -8,6 +8,7 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CommentSection from "@/components/CommentSection";
 import LikeButton from "@/components/LikeButton";
 import PostAuthorCard from "@/components/PostAuthorCard";
+import RelatedPosts from "@/components/RelatedPosts";
 import PostPrevNextNav from "@/components/PostPrevNextNav";
 import styles from "./page.module.css";
 
@@ -102,6 +103,8 @@ export default async function PostDetailPage({
           <PostPrevNextNav prevPost={post.prevPost} nextPost={post.nextPost} />
 
           <PostAuthorCard />
+
+          <RelatedPosts posts={post.relatedPosts} />
 
           <div className={styles.afterArticle}>
             <LikeButton postId={post.id} initialLiked={post.liked} initialLikeCount={post.likeCount} />
