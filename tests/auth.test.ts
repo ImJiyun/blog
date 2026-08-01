@@ -94,4 +94,18 @@ describe("POST /api/auth/login — lockout", () => {
     const response = await POST(loginRequest("test-password", "2.2.2.2"));
     expect(response.status).toBe(200);
   });
+
+  it("gives a fresh set of attempts after the lockout expires", async () => {
+    for (let i = 0; i < 5; i++) await POST(loginRequest("wrong", "3.3.3.3"));
+    await prisma.loginAttempt.update({
+      where: { ip: "3.3.3.3" },
+      data: { lockedUntil: new Date(Date.now() - 1000) },
+    });
+
+    const response = await POST(loginRequest("wrong", "3.3.3.3"));
+    expect(response.status).toBe(401); // not 429 — counter restarted, no instant re-lock
+    const row = await prisma.loginAttempt.findUnique({ where: { ip: "3.3.3.3" } });
+    expect(row?.failedCount).toBe(1);
+    expect(row?.lockedUntil).toBeNull();
+  });
 });
