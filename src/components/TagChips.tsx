@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import type { TagCount } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import styles from "./TagChips.module.css";
 
 export default function TagChips({
@@ -16,6 +17,7 @@ export default function TagChips({
   const activeTag = searchParams.get("tag");
 
   function selectTag(tag: string) {
+    trackEvent("click", { target_type: "tag", tag });
     const next = new URLSearchParams(searchParams.toString());
     if (activeTag === tag) {
       next.delete("tag");

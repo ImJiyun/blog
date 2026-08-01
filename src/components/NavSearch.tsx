@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import styles from "./Nav.module.css";
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -13,6 +14,7 @@ export default function NavSearch() {
 
   const [query, setQuery] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastTrackedRef = useRef<string | null>(null);
 
   // Keep the box in sync with the URL: reflect ?q= while on /posts, clear it
   // on any other route (e.g. clicking a tab away from a search).
@@ -40,6 +42,10 @@ export default function NavSearch() {
     const v = value.trim();
     const onPosts = pathname === "/posts";
     if (!v && !onPosts) return; // nothing to clear, don't navigate away
+    if (v && v !== lastTrackedRef.current) {
+      lastTrackedRef.current = v;
+      trackEvent("search", { search_term: v });
+    }
     const next = new URLSearchParams(onPosts ? searchParams.toString() : "");
     if (v) {
       next.set("q", v);

@@ -5,11 +5,13 @@ import { extractHeadings } from "@/lib/toc";
 import MarkdownBody from "@/components/MarkdownBody";
 import TableOfContents from "@/components/TableOfContents";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
+import PostEngagementTracker from "@/components/PostEngagementTracker";
 import CommentSection from "@/components/CommentSection";
 import LikeButton from "@/components/LikeButton";
 import PostAuthorCard from "@/components/PostAuthorCard";
 import RelatedPosts from "@/components/RelatedPosts";
 import PostPrevNextNav from "@/components/PostPrevNextNav";
+import PostTagLinks from "@/components/PostTagLinks";
 import styles from "./page.module.css";
 
 function formatDate(iso: string | null): string {
@@ -44,6 +46,7 @@ export default async function PostDetailPage({
   return (
     <>
       <ScrollProgressBar articleId="article-body" />
+      <PostEngagementTracker postSlug={post.slug} />
       <main className={styles.page}>
         <div className={styles.head}>
           <p className={styles.breadcrumb}>
@@ -62,20 +65,7 @@ export default async function PostDetailPage({
             </div>
           )}
 
-          {post.tags.length > 0 && (
-            <ul className={styles.tags} data-testid="post-tags">
-              {post.tags.map((tag) => (
-                <li key={tag}>
-                  <Link
-                    href={`/posts?tag=${encodeURIComponent(tag)}`}
-                    className={styles.tagLink}
-                  >
-                    #{tag}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <PostTagLinks tags={post.tags} />
 
           <h1 className={styles.title}>{post.title}</h1>
           {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
@@ -107,7 +97,12 @@ export default async function PostDetailPage({
           <RelatedPosts posts={post.relatedPosts} />
 
           <div className={styles.afterArticle}>
-            <LikeButton postId={post.id} initialLiked={post.liked} initialLikeCount={post.likeCount} />
+            <LikeButton
+              postId={post.id}
+              postSlug={post.slug}
+              initialLiked={post.liked}
+              initialLikeCount={post.likeCount}
+            />
             <CommentSection postId={post.id} initialComments={comments} />
           </div>
         </div>
