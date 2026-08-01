@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 import styles from "./RelatedPosts.module.css";
 
 type RelatedPost = { slug: string; title: string; publishedAt: string | null };
@@ -19,7 +22,12 @@ export default function RelatedPosts({ posts }: { posts: RelatedPost[] }) {
       <h2 className={styles.heading}>관련 글</h2>
       <div className={styles.grid}>
         {posts.map((post) => (
-          <Link key={post.slug} href={`/posts/${post.slug}`} className={styles.item}>
+          <Link
+            key={post.slug}
+            href={`/posts/${post.slug}`}
+            className={styles.item}
+            onClick={() => trackEvent("click", { target_type: "related_post", post_slug: post.slug })}
+          >
             <span className={styles.title}>{post.title}</span>
             <span className={styles.meta}>{formatDate(post.publishedAt)}</span>
           </Link>
