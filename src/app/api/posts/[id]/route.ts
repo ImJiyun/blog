@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: Params) {
       isPublic: true,
     },
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-    select: { id: true, slug: true, title: true },
+    select: { id: true, slug: true, title: true, category: true, tags: true, publishedAt: true },
   });
   const idx = neighbors.findIndex((n) => n.id === post.id);
   const prevPost = idx > 0 ? { slug: neighbors[idx - 1].slug, title: neighbors[idx - 1].title } : null;
@@ -31,6 +31,26 @@ export async function GET(request: NextRequest, { params }: Params) {
     idx >= 0 && idx < neighbors.length - 1
       ? { slug: neighbors[idx + 1].slug, title: neighbors[idx + 1].title }
       : null;
+
+  const relatedPosts = neighbors
+    .filter((n) => n.id !== post.id)
+    .map((n) => ({
+      neighbor: n,
+      score:
+        (n.category === post.category ? 2 : 0) +
+        n.tags.filter((tag) => post.tags.includes(tag)).length,
+    }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return (b.neighbor.publishedAt?.getTime() ?? 0) - (a.neighbor.publishedAt?.getTime() ?? 0);
+    })
+    .slice(0, 3)
+    .map(({ neighbor }) => ({
+      slug: neighbor.slug,
+      title: neighbor.title,
+      publishedAt: neighbor.publishedAt,
+    }));
 
   const visitorId = request.cookies.get("visitor_id")?.value;
   const [likeCount, likedByVisitor] = await Promise.all([
@@ -44,6 +64,7 @@ export async function GET(request: NextRequest, { params }: Params) {
     ...post,
     prevPost,
     nextPost,
+    relatedPosts,
     likeCount,
     liked: !!likedByVisitor,
   });
