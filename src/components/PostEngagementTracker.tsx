@@ -8,9 +8,16 @@ export default function PostEngagementTracker({ postSlug }: { postSlug: string }
   const firedRef = useRef<number[]>([]);
   const startRef = useRef<number>(Date.now());
   const readingSentRef = useRef(false);
+  const tickingRef = useRef(false);
 
   useEffect(() => {
-    function handleScroll() {
+    firedRef.current = [];
+    startRef.current = Date.now();
+    readingSentRef.current = false;
+    tickingRef.current = false;
+
+    function measureScroll() {
+      tickingRef.current = false;
       const article = document.getElementById("article-body");
       if (!article) return;
       const rect = article.getBoundingClientRect();
@@ -30,6 +37,12 @@ export default function PostEngagementTracker({ postSlug }: { postSlug: string }
       }
     }
 
+    function handleScroll() {
+      if (tickingRef.current) return;
+      tickingRef.current = true;
+      window.requestAnimationFrame(measureScroll);
+    }
+
     function handleVisibilityChange() {
       if (document.visibilityState !== "hidden" || readingSentRef.current) return;
       readingSentRef.current = true;
@@ -37,7 +50,7 @@ export default function PostEngagementTracker({ postSlug }: { postSlug: string }
       trackEvent("reading_time", { seconds, post_slug: postSlug });
     }
 
-    handleScroll();
+    measureScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {

@@ -9,8 +9,8 @@ type RelatedPost = { slug: string; title: string; publishedAt: string | null };
 function formatDate(iso: string | null): string {
   if (!iso) return "";
   const d = new Date(iso);
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(
-    d.getDate(),
+  return `${d.getUTCFullYear()}.${String(d.getUTCMonth() + 1).padStart(2, "0")}.${String(
+    d.getUTCDate(),
   ).padStart(2, "0")}`;
 }
 

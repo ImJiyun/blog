@@ -5,16 +5,16 @@ import { toggleLike } from "@/lib/api";
 import { trackEvent } from "@/lib/analytics";
 import styles from "./LikeButton.module.css";
 
-type Props = { postId: string; initialLiked: boolean; initialLikeCount: number };
+type Props = { postId: string; postSlug: string; initialLiked: boolean; initialLikeCount: number };
 
-export default function LikeButton({ postId, initialLiked, initialLikeCount }: Props) {
+export default function LikeButton({ postId, postSlug, initialLiked, initialLikeCount }: Props) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [pending, setPending] = useState(false);
 
   async function handleClick() {
     if (pending) return;
-    trackEvent("click", { target_type: "like", post_id: postId });
+    trackEvent("click", { target_type: "like", post_slug: postSlug });
     setPending(true);
     const prevLiked = liked;
     const prevCount = likeCount;

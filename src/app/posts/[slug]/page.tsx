@@ -97,7 +97,12 @@ export default async function PostDetailPage({
           <RelatedPosts posts={post.relatedPosts} />
 
           <div className={styles.afterArticle}>
-            <LikeButton postId={post.id} initialLiked={post.liked} initialLikeCount={post.likeCount} />
+            <LikeButton
+              postId={post.id}
+              postSlug={post.slug}
+              initialLiked={post.liked}
+              initialLikeCount={post.likeCount}
+            />
             <CommentSection postId={post.id} initialComments={comments} />
           </div>
         </div>
