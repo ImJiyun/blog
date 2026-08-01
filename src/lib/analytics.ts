@@ -4,7 +4,7 @@ export function trackEvent(name: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   const w = window as unknown as { dataLayer?: unknown[] };
   if (!Array.isArray(w.dataLayer)) return;
-  sendGAEvent("event", name, params);
+  sendGAEvent("event", name, params ?? {});
 }
 
 export function shouldEnableGA({
