@@ -5,6 +5,7 @@ import { extractHeadings } from "@/lib/toc";
 import MarkdownBody from "@/components/MarkdownBody";
 import TableOfContents from "@/components/TableOfContents";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
+import PostEngagementTracker from "@/components/PostEngagementTracker";
 import CommentSection from "@/components/CommentSection";
 import LikeButton from "@/components/LikeButton";
 import PostAuthorCard from "@/components/PostAuthorCard";
@@ -44,6 +45,7 @@ export default async function PostDetailPage({
   return (
     <>
       <ScrollProgressBar articleId="article-body" />
+      <PostEngagementTracker postSlug={post.slug} />
       <main className={styles.page}>
         <div className={styles.head}>
           <p className={styles.breadcrumb}>
