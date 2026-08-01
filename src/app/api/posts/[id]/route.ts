@@ -38,7 +38,7 @@ export async function GET(request: NextRequest, { params }: Params) {
       neighbor: n,
       score:
         (n.category === post.category ? 2 : 0) +
-        n.tags.filter((tag) => post.tags.includes(tag)).length,
+        new Set(n.tags.filter((tag) => post.tags.includes(tag))).size,
     }))
     .filter(({ score }) => score > 0)
     .sort((a, b) => {

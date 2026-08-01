@@ -16,7 +16,7 @@ export default function RelatedPosts({ posts }: { posts: RelatedPost[] }) {
 
   return (
     <div className={styles.section} data-testid="related-posts">
-      <h3 className={styles.heading}>관련 글</h3>
+      <h2 className={styles.heading}>관련 글</h2>
       <div className={styles.grid}>
         {posts.map((post) => (
           <Link key={post.slug} href={`/posts/${post.slug}`} className={styles.item}>

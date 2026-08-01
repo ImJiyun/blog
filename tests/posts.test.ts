@@ -689,6 +689,25 @@ describe("GET /api/posts/{slug} — related posts", () => {
       c.slug,
       b.slug,
     ]);
+    expect(body.relatedPosts[0]).toMatchObject({ slug: d.slug, title: "D" });
+    expect(typeof body.relatedPosts[0].publishedAt).toBe("string");
+  });
+
+  it("does not let a candidate's duplicate tags inflate its score above a de-duplicated one", async () => {
+    const current = await publish("현재 글", "SQL", { tags: ["window"] });
+    const duplicateTag = await publish("중복 태그 글", "Python", { tags: ["window", "window"] });
+    const singleTag = await publish("단일 태그 글", "Python", { tags: ["window"] });
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(current.slug));
+    const body = await response.json();
+    const slugs = body.relatedPosts.map((p: { slug: string }) => p.slug);
+    expect(slugs).toContain(duplicateTag.slug);
+    expect(slugs).toContain(singleTag.slug);
+    // Both share exactly one distinct tag with the current post and no category match,
+    // so they tie on score and fall back to the most-recent-first tiebreak — singleTag
+    // was published after duplicateTag, so it ranks first. If duplicate tags inflated
+    // duplicateTag's score, it would incorrectly outrank singleTag instead.
+    expect(slugs.indexOf(singleTag.slug)).toBeLessThan(slugs.indexOf(duplicateTag.slug));
   });
 
   it("excludes private and draft posts from relatedPosts", async () => {
