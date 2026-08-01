@@ -23,6 +23,7 @@ export type Post = {
 export type PostDetail = Post & {
   prevPost: { slug: string; title: string } | null;
   nextPost: { slug: string; title: string } | null;
+  relatedPosts: { slug: string; title: string; publishedAt: string | null }[];
   likeCount: number;
   liked: boolean;
 };

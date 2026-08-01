@@ -632,6 +632,83 @@ describe("GET /api/posts/{slug} — prev/next", () => {
   });
 });
 
+describe("GET /api/posts/{slug} — related posts", () => {
+  async function publish(title: string, category: string, extra: Record<string, unknown> = {}) {
+    const create = await POST(
+      createRequest({ title, bodyMd: "본문", category, tags: [], status: "published", ...extra }),
+    );
+    return create.json();
+  }
+
+  it("ranks a same-category match above a different-category match with one shared tag", async () => {
+    const current = await publish("현재 글", "SQL", { tags: ["window"] });
+    const sameCategory = await publish("같은 카테고리 글", "SQL", { tags: [] });
+    const sharedTag = await publish("태그만 겹치는 글", "Python", { tags: ["window"] });
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(current.slug));
+    const body = await response.json();
+    expect(body.relatedPosts.map((p: { slug: string }) => p.slug)).toEqual([
+      sameCategory.slug,
+      sharedTag.slug,
+    ]);
+  });
+
+  it("ranks more shared tags above fewer, when both candidates share the current post's category", async () => {
+    const current = await publish("현재 글", "SQL", { tags: ["window", "join"] });
+    const twoShared = await publish("태그 2개 겹침", "SQL", { tags: ["window", "join"] });
+    const oneShared = await publish("태그 1개 겹침", "SQL", { tags: ["window"] });
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(current.slug));
+    const body = await response.json();
+    expect(body.relatedPosts.map((p: { slug: string }) => p.slug)).toEqual([
+      twoShared.slug,
+      oneShared.slug,
+    ]);
+  });
+
+  it("excludes a candidate with no matching category and no shared tags", async () => {
+    const current = await publish("현재 글", "SQL", { tags: ["window"] });
+    await publish("전혀 안 겹치는 글", "Python", { tags: ["pandas"] });
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(current.slug));
+    expect((await response.json()).relatedPosts).toEqual([]);
+  });
+
+  it("returns at most 3 related posts, most recent first among equal scores", async () => {
+    const current = await publish("현재 글", "SQL", { tags: [] });
+    await publish("A", "SQL", { tags: [] });
+    const b = await publish("B", "SQL", { tags: [] });
+    const c = await publish("C", "SQL", { tags: [] });
+    const d = await publish("D", "SQL", { tags: [] });
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(current.slug));
+    const body = await response.json();
+    expect(body.relatedPosts).toHaveLength(3);
+    expect(body.relatedPosts.map((p: { slug: string }) => p.slug)).toEqual([
+      d.slug,
+      c.slug,
+      b.slug,
+    ]);
+  });
+
+  it("excludes private and draft posts from relatedPosts", async () => {
+    const current = await publish("현재 글", "SQL", { tags: ["window"] });
+    await publish("비공개 글", "SQL", { tags: ["window"], isPublic: false });
+    await POST(
+      createRequest({
+        title: "초안 글",
+        bodyMd: "x",
+        category: "SQL",
+        tags: ["window"],
+        status: "draft",
+      }),
+    );
+
+    const response = await GET_ONE(new NextRequest("http://localhost"), params(current.slug));
+    expect((await response.json()).relatedPosts).toEqual([]);
+  });
+});
+
 async function createPublishedPost(): Promise<{ id: string; slug: string }> {
   const response = await POST(
     createRequest({
