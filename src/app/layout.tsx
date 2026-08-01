@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "pretendard/dist/web/static/pretendard.css";
 import "./globals.css";
 import { plexMono } from "./fonts";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import PageViewTracker from "@/components/PageViewTracker";
+import { verifyToken } from "@/lib/auth";
+import { shouldEnableGA } from "@/lib/analytics";
 
 export const metadata: Metadata = {
   title: "jiyun.dev",
@@ -22,7 +27,16 @@ const themeInitScript = `
   })();
 `;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const token = (await cookies()).get("token")?.value;
+  const isAdminSession = !!token && verifyToken(token);
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const gaEnabled = shouldEnableGA({
+    nodeEnv: process.env.NODE_ENV,
+    gaMeasurementId: gaId,
+    isAdminSession,
+  });
+
   return (
     <html lang="ko" className={plexMono.variable} suppressHydrationWarning>
       <body>
@@ -30,6 +44,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         {children}
         <Footer />
+        {gaEnabled && (
+          <>
+            <GoogleAnalytics gaId={gaId!} />
+            <PageViewTracker />
+          </>
+        )}
       </body>
     </html>
   );
