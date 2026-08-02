@@ -18,6 +18,11 @@
   overflow-y: auto;
 }
 
+.textarea:read-only {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .preview {
   height: 480px;
   overflow-y: auto;
