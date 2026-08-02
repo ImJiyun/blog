@@ -103,7 +103,7 @@ export default async function PostDetailPage({
               initialLiked={post.liked}
               initialLikeCount={post.likeCount}
             />
-            <CommentSection postId={post.id} initialComments={comments} />
+            <CommentSection postId={post.id} postSlug={post.slug} initialComments={comments} />
           </div>
         </div>
       </main>
