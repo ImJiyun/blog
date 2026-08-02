@@ -63,16 +63,24 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
     }
   }
 
-  async function uploadAndInsertImages(files: File[], position: number) {
+  async function uploadAndInsertImages(files: File[], start: number, end: number) {
     setUploading(true);
     setError(null);
-    let cursor = position;
+    let cursor = start;
     try {
       for (let i = 0; i < files.length; i++) {
         const { url } = await uploadImage(files[i]);
         const markdownImage = `${i === 0 ? "" : "\n"}![](${url})`;
-        setBodyMd((prev) => prev.slice(0, cursor) + markdownImage + prev.slice(cursor));
-        cursor += markdownImage.length;
+        // Capture this iteration's slice bounds as locals (not the shared
+        // `cursor`/`sliceEnd` closed over by reference) — setBodyMd's updater
+        // callback is invoked by React later, after `cursor` below has
+        // already been advanced for the next iteration. Closing over the
+        // mutable outer variable let a later iteration's advanced cursor
+        // leak into an earlier iteration's slice indices.
+        const insertAt = cursor;
+        const replaceEnd = i === 0 ? end : insertAt;
+        setBodyMd((prev) => prev.slice(0, insertAt) + markdownImage + prev.slice(replaceEnd));
+        cursor = insertAt + markdownImage.length;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Image upload failed.");
@@ -97,22 +105,24 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
       .filter((file): file is File => file !== null);
     if (files.length === 0) return;
     event.preventDefault();
-    const position = event.currentTarget.selectionStart ?? bodyMd.length;
-    uploadAndInsertImages(files, position);
+    uploadAndInsertImages(files, event.currentTarget.selectionStart, event.currentTarget.selectionEnd);
   }
 
   function handleDrop(event: DragEvent<HTMLTextAreaElement>) {
+    if (!event.dataTransfer.types.includes("Files")) return;
+    event.preventDefault();
     if (uploading) return;
     const files = Array.from(event.dataTransfer.files).filter((file) =>
       file.type.startsWith("image/"),
     );
     if (files.length === 0) return;
-    event.preventDefault();
-    const position = event.currentTarget.selectionStart ?? bodyMd.length;
-    uploadAndInsertImages(files, position);
+    const start = event.currentTarget.selectionStart;
+    const end = event.currentTarget.selectionEnd;
+    uploadAndInsertImages(files, start, end);
   }
 
   function handleDragOver(event: DragEvent<HTMLTextAreaElement>) {
+    if (!event.dataTransfer.types.includes("Files")) return;
     event.preventDefault();
   }
 
