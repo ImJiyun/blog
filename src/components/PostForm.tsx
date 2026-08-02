@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, ClipboardEvent, DragEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   createPost,
@@ -61,6 +61,57 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
       setUploading(false);
       event.target.value = "";
     }
+  }
+
+  async function uploadAndInsertImages(files: File[], position: number) {
+    setUploading(true);
+    setError(null);
+    let cursor = position;
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const { url } = await uploadImage(files[i]);
+        const markdownImage = `${i === 0 ? "" : "\n"}![](${url})`;
+        setBodyMd((prev) => prev.slice(0, cursor) + markdownImage + prev.slice(cursor));
+        cursor += markdownImage.length;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Image upload failed.");
+    } finally {
+      setUploading(false);
+      const finalCursor = cursor;
+      requestAnimationFrame(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+          textarea.focus();
+          textarea.setSelectionRange(finalCursor, finalCursor);
+        }
+      });
+    }
+  }
+
+  function handlePaste(event: ClipboardEvent<HTMLTextAreaElement>) {
+    const files = Array.from(event.clipboardData.items)
+      .filter((item) => item.kind === "file" && item.type.startsWith("image/"))
+      .map((item) => item.getAsFile())
+      .filter((file): file is File => file !== null);
+    if (files.length === 0) return;
+    event.preventDefault();
+    const position = event.currentTarget.selectionStart ?? bodyMd.length;
+    uploadAndInsertImages(files, position);
+  }
+
+  function handleDrop(event: DragEvent<HTMLTextAreaElement>) {
+    const files = Array.from(event.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/"),
+    );
+    if (files.length === 0) return;
+    event.preventDefault();
+    const position = event.currentTarget.selectionStart ?? bodyMd.length;
+    uploadAndInsertImages(files, position);
+  }
+
+  function handleDragOver(event: DragEvent<HTMLTextAreaElement>) {
+    event.preventDefault();
   }
 
   async function handleSave(status: PostStatus) {
@@ -170,11 +221,20 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
             data-testid="image-upload-input"
           />
         </label>
+        {uploading && <p className={styles.uploadStatus}>Uploading image(s)…</p>}
       </div>
 
       <div className={styles.bodyField}>
         <span className={styles.bodyLabel}>Body (Markdown)</span>
-        <MarkdownEditor ref={textareaRef} value={bodyMd} onChange={setBodyMd} />
+        <MarkdownEditor
+          ref={textareaRef}
+          value={bodyMd}
+          onChange={setBodyMd}
+          onPaste={handlePaste}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          disabled={uploading}
+        />
       </div>
 
       <div className={styles.actions}>
