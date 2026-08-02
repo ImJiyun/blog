@@ -8,7 +8,7 @@ import { formatRelativeTime } from "@/lib/relativeTime";
 import { trackEvent } from "@/lib/analytics";
 import styles from "./CommentSection.module.css";
 
-type Props = { postId: string; initialComments: Comment[] };
+type Props = { postId: string; postSlug: string; initialComments: Comment[] };
 
 function buildTree(comments: Comment[]): Map<string | null, Comment[]> {
   const byParent = new Map<string | null, Comment[]>();
@@ -61,7 +61,7 @@ function CommentNode({
   );
 }
 
-export default function CommentSection({ postId, initialComments }: Props) {
+export default function CommentSection({ postId, postSlug, initialComments }: Props) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [authorName, setAuthorName] = useState("");
   const [body, setBody] = useState("");
@@ -86,7 +86,7 @@ export default function CommentSection({ postId, initialComments }: Props) {
         body: body.trim(),
         parentCommentId: replyTo ?? undefined,
       });
-      trackEvent("click", { target_type: "comment_submit", post_id: postId });
+      trackEvent("click", { target_type: "comment_submit", post_slug: postSlug });
       setComments((prev) => [...prev, comment]);
       setAuthorName("");
       setBody("");
