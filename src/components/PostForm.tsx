@@ -90,6 +90,7 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
   }
 
   function handlePaste(event: ClipboardEvent<HTMLTextAreaElement>) {
+    if (uploading) return;
     const files = Array.from(event.clipboardData.items)
       .filter((item) => item.kind === "file" && item.type.startsWith("image/"))
       .map((item) => item.getAsFile())
@@ -101,6 +102,7 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
   }
 
   function handleDrop(event: DragEvent<HTMLTextAreaElement>) {
+    if (uploading) return;
     const files = Array.from(event.dataTransfer.files).filter((file) =>
       file.type.startsWith("image/"),
     );
