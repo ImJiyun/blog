@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 import styles from "./PostPrevNextNav.module.css";
 
 type NeighborPost = { slug: string; title: string } | null;
@@ -16,7 +19,11 @@ export default function PostPrevNextNav({
     <div className={styles.row} data-testid="post-prev-next">
       <div>
         {prevPost && (
-          <Link href={`/posts/${prevPost.slug}`} className={styles.item}>
+          <Link
+            href={`/posts/${prevPost.slug}`}
+            className={styles.item}
+            onClick={() => trackEvent("click", { target_type: "prev_post", post_slug: prevPost.slug })}
+          >
             <span className={styles.label}>← 이전 글</span>
             <span className={styles.title}>{prevPost.title}</span>
           </Link>
@@ -24,7 +31,11 @@ export default function PostPrevNextNav({
       </div>
       <div className={styles.nextCell}>
         {nextPost && (
-          <Link href={`/posts/${nextPost.slug}`} className={`${styles.item} ${styles.itemRight}`}>
+          <Link
+            href={`/posts/${nextPost.slug}`}
+            className={`${styles.item} ${styles.itemRight}`}
+            onClick={() => trackEvent("click", { target_type: "next_post", post_slug: nextPost.slug })}
+          >
             <span className={styles.label}>다음 글 →</span>
             <span className={styles.title}>{nextPost.title}</span>
           </Link>
