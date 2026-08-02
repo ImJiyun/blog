@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { createComment } from "@/lib/api";
 import type { Comment } from "@/lib/api";
 import { formatRelativeTime } from "@/lib/relativeTime";
+import { trackEvent } from "@/lib/analytics";
 import styles from "./CommentSection.module.css";
 
 type Props = { postId: string; initialComments: Comment[] };
@@ -85,6 +86,7 @@ export default function CommentSection({ postId, initialComments }: Props) {
         body: body.trim(),
         parentCommentId: replyTo ?? undefined,
       });
+      trackEvent("click", { target_type: "comment_submit", post_id: postId });
       setComments((prev) => [...prev, comment]);
       setAuthorName("");
       setBody("");
