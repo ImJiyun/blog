@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
     <main className={styles.page}>
       <form className={styles.form} onSubmit={handleSubmit} data-testid="login-form">
         <h1 className={styles.title}>
-          <span className={styles.titlePrompt}>&gt;</span>jiyun.dev/admin
+          <span className={styles.titlePrompt}>&gt;</span>hanul.dev/admin
         </h1>
         <input
           type="password"

@@ -37,7 +37,7 @@ const PROJECTS: Project[] = [
   },
 ];
 
-export const metadata = { title: "Project — jiyun.dev" };
+export const metadata = { title: "Project — hanul.dev" };
 
 export default function ProjectPage() {
   return (

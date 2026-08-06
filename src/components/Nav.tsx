@@ -38,7 +38,7 @@ export default function Nav() {
     <header id="site-nav" className={styles.header}>
       <div className={styles.topBar}>
         <Link href="/" className={styles.wordmark}>
-          <span className={styles.wordmarkPrompt}>&gt;</span>jiyun.dev
+          <span className={styles.wordmarkPrompt}>&gt;</span>hanul.dev
         </Link>
         <div className={styles.topBarActions}>
           <ThemeToggle />
@@ -55,7 +55,7 @@ export default function Nav() {
 
       {!minimal && (
         <div className={styles.avatar}>
-          {/* Decorative — the "jiyun.dev" wordmark above already carries the site's
+          {/* Decorative — the "hanul.dev" wordmark above already carries the site's
               text identity, so this doesn't need alt text of its own. */}
           <Image
             src="/character.jpg"
@@ -66,7 +66,7 @@ export default function Nav() {
             priority
           />
           <p className={styles.avatarTagline}>
-            데이터와 일상을 기록하는 jiyun.dev 입니다.
+            데이터와 일상을 기록하는 hanul.dev 입니다.
           </p>
         </div>
       )}
