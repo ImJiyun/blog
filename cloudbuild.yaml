@@ -15,6 +15,8 @@ steps:
       - build
       - --build-arg
       - NEXT_PUBLIC_GA_MEASUREMENT_ID=$_GA_MEASUREMENT_ID
+      - --build-arg
+      - NEXT_PUBLIC_SITE_URL=$_SITE_URL
       - -t
       - us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog:$SHORT_SHA
       - -t
@@ -36,7 +38,6 @@ steps:
       - --image=us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog:$SHORT_SHA
       - --region=us-central1
       - --platform=managed
-      - --update-env-vars=NEXT_PUBLIC_SITE_URL=$_SITE_URL
 
 images:
   - us-central1-docker.pkg.dev/$PROJECT_ID/blog/blog:$SHORT_SHA
@@ -55,6 +56,7 @@ substitutions:
   # substitution is enough; no Secret Manager entry needed. Override at the
   # Cloud Build trigger level if it ever needs to change without a commit.
   _GA_MEASUREMENT_ID: "G-X7LYQMZBMB"
-  # --update-env-vars only touches this key, leaving the secret-backed env vars
-  # (DATABASE_URL, JWT_SECRET, ADMIN_PASSWORD_HASH) untouched.
+  # Passed as --build-arg, not --update-env-vars — NEXT_PUBLIC_* vars are
+  # inlined at build time, so setting this on the deployed service afterward
+  # would be a no-op (see the Dockerfile comment above NEXT_PUBLIC_GA_MEASUREMENT_ID).
   _SITE_URL: "https://hanul.dev"
