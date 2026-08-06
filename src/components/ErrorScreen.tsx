@@ -36,7 +36,7 @@ export default function ErrorScreen({
   return (
     <div className={styles.screen}>
       <Link href="/" className={styles.wordmark}>
-        <span className={styles.wordmarkPrompt}>&gt;</span>jiyun.dev
+        <span className={styles.wordmarkPrompt}>&gt;</span>hanul.dev
       </Link>
       <div className={styles.code}>{code}</div>
       <h1 className={styles.title}>{title}</h1>

@@ -50,7 +50,7 @@ Dark mode follows OS preference (`prefers-color-scheme`), with `[data-theme="dar
   - **500 (Medium)** — nav / metadata / UI labels
   - **400 (Regular)** — body copy
 - **JetBrains Mono** (400/500/700) — code blocks, the category label and index badge
-  inside card thumbnails, the nav wordmark's `>` prompt + "jiyun.dev" text, post-detail
+  inside card thumbnails, the nav wordmark's `>` prompt + "hanul.dev" text, post-detail
   meta text (date/read time), the table-of-contents "목차" label. Not used for
   dates/metadata elsewhere. Loaded as `--font-mono` via `next/font/google`, attached
   through the `plexMono.variable` class on `<html>` (not declared in `globals.css`
@@ -72,7 +72,7 @@ Dark mode follows OS preference (`prefers-color-scheme`), with `[data-theme="dar
 
 ## Layout quick facts
 
-- **Top bar**: mono wordmark `>jiyun.dev` (the `>` in `--accent`) left, working
+- **Top bar**: mono wordmark `>hanul.dev` (the `>` in `--accent`) left, working
   dark/light mode toggle (sliding pill switch, not an icon button) + GitHub button
   right (`space-between`). Shown on every page, including `/posts/[slug]` and
   `/admin/*`. On mobile (≤560px) the tab row below it scrolls horizontally instead of

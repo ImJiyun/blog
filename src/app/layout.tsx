@@ -11,7 +11,7 @@ import { verifyToken } from "@/lib/auth";
 import { shouldEnableGA } from "@/lib/analytics";
 
 export const metadata: Metadata = {
-  title: "jiyun.dev",
+  title: "hanul.dev",
   description:
     "A personal blog whose own usage data feeds a BI/analytics practice.",
 };
