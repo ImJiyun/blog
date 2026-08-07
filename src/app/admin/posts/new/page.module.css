@@ -1,0 +1,30 @@
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 48px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.backLink {
+  align-self: flex-start;
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--accent);
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 4px 0 8px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+}

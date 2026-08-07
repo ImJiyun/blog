@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getPost } from "@/lib/api";
 import PostForm from "@/components/PostForm";
+import styles from "./page.module.css";
 
 export default async function EditPostPage({
   params,
@@ -12,10 +14,11 @@ export default async function EditPostPage({
   if (!post) notFound();
 
   return (
-    <main style={{ padding: "2.5rem 1.5rem 6rem" }}>
-      <h1 style={{ fontFamily: "var(--font-sans)", fontWeight: 900, color: "var(--ink)" }}>
-        Edit Post
-      </h1>
+    <main className={styles.page}>
+      <Link href="/admin/posts" className={styles.backLink}>
+        ← 목록으로
+      </Link>
+      <h1 className={styles.title}>Edit Post</h1>
       <PostForm initialPost={post} />
     </main>
   );
