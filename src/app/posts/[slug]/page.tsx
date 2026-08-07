@@ -62,6 +62,9 @@ export default async function PostDetailPage({
                   reasoning as PostCard.tsx). */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={post.thumbnailUrl} alt="" className={styles.heroImage} />
+              {post.isPublic === false && (
+                <span className={styles.privateBadge}>비공개</span>
+              )}
             </div>
           )}
 
