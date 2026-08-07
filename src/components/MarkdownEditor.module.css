@@ -31,6 +31,15 @@
   padding: 0.75rem 1rem;
 }
 
+.previewLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
 .placeholder {
   font-family: var(--font-sans);
   font-size: 0.85rem;

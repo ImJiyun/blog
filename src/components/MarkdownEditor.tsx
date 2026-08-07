@@ -34,6 +34,7 @@ const MarkdownEditor = forwardRef<HTMLTextAreaElement, Props>(
           data-testid="post-body-textarea"
         />
         <div className={styles.preview} data-testid="post-body-preview">
+          <div className={styles.previewLabel}>미리보기</div>
           {value.trim() ? (
             <MarkdownBody bodyMd={value} />
           ) : (
