@@ -7,6 +7,7 @@ import { plexMono } from "./fonts";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import PageViewTracker from "@/components/PageViewTracker";
+import AdminLoginShortcut from "@/components/AdminLoginShortcut";
 import { verifyToken } from "@/lib/auth";
 import { shouldEnableGA } from "@/lib/analytics";
 
@@ -42,6 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <Nav />
+        <AdminLoginShortcut isAdmin={isAdminSession} />
         {children}
         <Footer />
         {gaEnabled && (
