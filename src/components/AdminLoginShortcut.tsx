@@ -18,11 +18,12 @@ export default function AdminLoginShortcut({ isAdmin }: { isAdmin: boolean }) {
       const isShortcut =
         (event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === "l";
       if (isShortcut) {
-        event.preventDefault();
         if (isAdmin) return;
+        event.preventDefault();
         setOpen(true);
         setPassword("");
         setError(null);
+        setSubmitting(false);
         return;
       }
       if (event.key === "Escape") {

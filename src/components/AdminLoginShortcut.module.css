@@ -74,3 +74,8 @@
   color: var(--ink-soft);
   border: 1px solid var(--border);
 }
+
+.buttonRow button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

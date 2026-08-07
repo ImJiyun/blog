@@ -13,10 +13,18 @@ const POST_TITLE = `Playwright Smoke Post ${Date.now()}`;
 
 async function loginAsAdmin(page: import("@playwright/test").Page) {
   await page.goto("/");
-  await page.keyboard.press("ControlOrMeta+Shift+L");
+  // The keydown listener only attaches after React hydration finishes, so a
+  // keypress fired before that point is dropped rather than queued. Retry
+  // until the modal is actually visible instead of racing hydration.
+  await expect(async () => {
+    await page.keyboard.press("ControlOrMeta+Shift+L");
+    await expect(page.getByTestId("admin-login-modal")).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 15000 });
   await page.getByTestId("password-input").fill(ADMIN_PASSWORD);
   await page.getByTestId("login-submit").click();
   await expect(page.getByTestId("admin-login-modal")).not.toBeVisible();
+  // Successful login should refresh in place, not navigate away.
+  await expect(page).toHaveURL(/\/$/);
 }
 
 test.describe.serial("golden path: write, publish, list, comment, like", () => {
