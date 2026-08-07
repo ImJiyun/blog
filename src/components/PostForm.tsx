@@ -211,6 +211,7 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
         type="button"
         role="switch"
         aria-checked={isPublic}
+        aria-label="공개 여부"
         onClick={() => setIsPublic((prev) => !prev)}
         className={isPublic ? `${styles.publishToggle} ${styles.publishToggleOn}` : styles.publishToggle}
         data-testid="post-public-toggle"
