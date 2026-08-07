@@ -161,25 +161,26 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
     <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
       {error && <p className={styles.error}>{error}</p>}
 
-      <label className={styles.field}>
-        <span>Title</span>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          data-testid="post-title-input"
-        />
-      </label>
-
-      <label className={styles.field}>
-        <span>Subtitle (optional)</span>
-        <input
-          type="text"
-          value={subtitle}
-          onChange={(e) => setSubtitle(e.target.value)}
-          data-testid="post-subtitle-input"
-        />
-      </label>
+      <div className={styles.fieldRow}>
+        <label className={styles.field}>
+          <span>Title</span>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            data-testid="post-title-input"
+          />
+        </label>
+        <label className={styles.field}>
+          <span>Subtitle (optional)</span>
+          <input
+            type="text"
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+            data-testid="post-subtitle-input"
+          />
+        </label>
+      </div>
 
       <label className={styles.field}>
         <span>Category</span>
@@ -206,20 +207,17 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
         />
       </label>
 
-      <div className={styles.switchField}>
-        <span>Public</span>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={isPublic}
-          aria-label="Public"
-          onClick={() => setIsPublic((prev) => !prev)}
-          className={styles.switch}
-          data-testid="post-public-toggle"
-        >
-          <span className={isPublic ? `${styles.switchKnob} ${styles.switchKnobOn}` : styles.switchKnob} />
-        </button>
-      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={isPublic}
+        onClick={() => setIsPublic((prev) => !prev)}
+        className={isPublic ? `${styles.publishToggle} ${styles.publishToggleOn}` : styles.publishToggle}
+        data-testid="post-public-toggle"
+      >
+        <span className={isPublic ? `${styles.publishDot} ${styles.publishDotOn}` : styles.publishDot} />
+        {isPublic ? "공개" : "비공개"}
+      </button>
 
       <div className={styles.toolbar}>
         <label className={styles.uploadButton}>
@@ -252,18 +250,16 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
       <div className={styles.actions}>
         <button
           type="button"
-          onClick={() => handleSave("draft")}
+          onClick={() => router.push("/admin/posts")}
           disabled={saving}
-          data-testid="save-draft-button"
+          data-testid="cancel-button"
         >
+          Cancel
+        </button>
+        <button type="button" onClick={() => handleSave("draft")} disabled={saving} data-testid="save-draft-button">
           Save Draft
         </button>
-        <button
-          type="button"
-          onClick={() => handleSave("published")}
-          disabled={saving}
-          data-testid="publish-button"
-        >
+        <button type="button" onClick={() => handleSave("published")} disabled={saving} data-testid="publish-button">
           Publish
         </button>
       </div>
