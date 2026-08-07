@@ -17,7 +17,7 @@ async function loginAsAdmin(page: import("@playwright/test").Page) {
   // keypress fired before that point is dropped rather than queued. Retry
   // until the modal is actually visible instead of racing hydration.
   await expect(async () => {
-    await page.keyboard.press("ControlOrMeta+Shift+L");
+    await page.keyboard.press("ControlOrMeta+Shift+K");
     await expect(page.getByTestId("admin-login-modal")).toBeVisible({ timeout: 1000 });
   }).toPass({ timeout: 15000 });
   await page.getByTestId("password-input").fill(ADMIN_PASSWORD);

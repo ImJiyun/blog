@@ -16,7 +16,7 @@ export default function AdminLoginShortcut({ isAdmin }: { isAdmin: boolean }) {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       const isShortcut =
-        (event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === "l";
+        (event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === "k";
       if (isShortcut) {
         if (isAdmin) return;
         event.preventDefault();
