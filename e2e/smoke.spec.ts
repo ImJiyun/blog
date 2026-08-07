@@ -11,12 +11,18 @@ import { test, expect } from "@playwright/test";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "test-password";
 const POST_TITLE = `Playwright Smoke Post ${Date.now()}`;
 
+async function loginAsAdmin(page: import("@playwright/test").Page) {
+  await page.goto("/");
+  await page.keyboard.press("ControlOrMeta+Shift+L");
+  await page.getByTestId("password-input").fill(ADMIN_PASSWORD);
+  await page.getByTestId("login-submit").click();
+  await expect(page.getByTestId("admin-login-modal")).not.toBeVisible();
+}
+
 test.describe.serial("golden path: write, publish, list, comment, like", () => {
   test("admin logs in and publishes a post", async ({ page }) => {
-    await page.goto("/admin/login");
-    await page.getByTestId("password-input").fill(ADMIN_PASSWORD);
-    await page.getByTestId("login-submit").click();
-    await expect(page).toHaveURL(/\/admin\/posts$/);
+    await loginAsAdmin(page);
+    await page.goto("/admin/posts");
 
     await page.getByTestId("new-post-link").click();
     await expect(page).toHaveURL(/\/admin\/posts\/new$/);
@@ -35,10 +41,7 @@ test.describe.serial("golden path: write, publish, list, comment, like", () => {
   });
 
   test("the subtitle round-trips through the edit form", async ({ page }) => {
-    await page.goto("/admin/login");
-    await page.getByTestId("password-input").fill(ADMIN_PASSWORD);
-    await page.getByTestId("login-submit").click();
-    await expect(page).toHaveURL(/\/admin\/posts$/);
+    await loginAsAdmin(page);
     await page.goto("/admin/posts");
     await page.getByText(POST_TITLE).click();
     await expect(page.getByTestId("post-subtitle-input")).toHaveValue(
