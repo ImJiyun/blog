@@ -1,0 +1,76 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: min(360px, 90vw);
+  padding: 2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin: 0;
+  text-align: center;
+}
+
+.modal input {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.error {
+  color: #d64545;
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.buttonRow button {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 0.6rem 1rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buttonRow button[type="submit"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.buttonRow button[type="submit"]:hover {
+  opacity: 0.85;
+}
+
+.buttonRow button[type="button"] {
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+}
