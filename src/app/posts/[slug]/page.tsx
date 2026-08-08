@@ -50,7 +50,10 @@ export default async function PostDetailPage({
       <main className={styles.page}>
         <div className={styles.head}>
           <p className={styles.breadcrumb}>
-            <Link href={categorySection(post.category).href}>{categorySection(post.category).label}</Link> / {post.category}
+            <Link href={categorySection(post.category).href}>
+              {categorySection(post.category).label}
+            </Link>{" "}
+            / {post.category}
           </p>
 
           {post.thumbnailUrl && (
@@ -61,7 +64,11 @@ export default async function PostDetailPage({
                   remotePatterns allowlist for hosts we don't control (same
                   reasoning as PostCard.tsx). */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={post.thumbnailUrl} alt="" className={styles.heroImage} />
+              <img
+                src={post.thumbnailUrl}
+                alt=""
+                className={styles.heroImage}
+              />
               {post.isPublic === false && (
                 <span className={styles.privateBadge}>비공개</span>
               )}
@@ -84,7 +91,7 @@ export default async function PostDetailPage({
             the nav/footer don't skew it" — prev/next nav, the author card,
             likes, and comments are content, not nav/footer, unlike the page
             header above this point). */}
-        <div id="article-body">
+        <div id="article-body" className={styles.contentStack}>
           <div className={styles.layout}>
             <article className={styles.article}>
               <MarkdownBody bodyMd={post.bodyMd} />
@@ -106,7 +113,11 @@ export default async function PostDetailPage({
               initialLiked={post.liked}
               initialLikeCount={post.likeCount}
             />
-            <CommentSection postId={post.id} postSlug={post.slug} initialComments={comments} />
+            <CommentSection
+              postId={post.id}
+              postSlug={post.slug}
+              initialComments={comments}
+            />
           </div>
         </div>
       </main>

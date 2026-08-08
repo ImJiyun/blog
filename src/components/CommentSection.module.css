@@ -1,5 +1,5 @@
 .section {
-  margin: 3rem 0;
+  margin-top: 0;
 }
 
 .heading {
@@ -76,7 +76,6 @@
   flex-direction: column;
   gap: 0.75rem;
   margin-bottom: 2rem;
-  max-width: 480px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 1rem;
