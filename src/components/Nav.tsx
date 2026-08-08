@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import styles from "./Nav.module.css";
 import ThemeToggle from "./ThemeToggle";
 import NavSearch from "./NavSearch";
+import AdminModeBadge from "./AdminModeBadge";
 
 const TABS = [
   { label: "Latest", href: "/" },
@@ -30,7 +31,7 @@ function isMinimalHeader(pathname: string): boolean {
   return pathname.startsWith("/posts/") || pathname.startsWith("/admin");
 }
 
-export default function Nav() {
+export default function Nav({ isAdmin }: { isAdmin: boolean }) {
   const pathname = usePathname();
   const minimal = isMinimalHeader(pathname);
 
@@ -41,6 +42,7 @@ export default function Nav() {
           <span className={styles.wordmarkPrompt}>&gt;</span>hanul.dev
         </Link>
         <div className={styles.topBarActions}>
+          {isAdmin && <AdminModeBadge />}
           <ThemeToggle />
           <a
             href={GITHUB_URL}

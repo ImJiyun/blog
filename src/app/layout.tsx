@@ -43,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="ko" className={plexMono.variable} suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <Nav />
+        <Nav isAdmin={isAdminSession} />
         <AdminLoginShortcut isAdmin={isAdminSession} />
         <AdminFab isAdmin={isAdminSession} />
         {children}
