@@ -57,6 +57,8 @@
 .afterArticle {
   max-width: calc(100% - 200px - 3rem);
   min-width: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
 }
 
 @media (max-width: 860px) {
