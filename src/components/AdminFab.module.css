@@ -16,6 +16,7 @@
   box-shadow: 0 4px 12px oklch(0 0 0 / 0.2);
   z-index: 40;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  text-decoration: none;
 }
 
 .fab:hover {
