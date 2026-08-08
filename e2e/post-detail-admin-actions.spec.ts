@@ -18,9 +18,27 @@ test.describe("post detail admin actions", () => {
 
   test("delete removes the post and redirects home", async ({ page }) => {
     await loginAsAdmin(page);
-    await page.goto("/");
-    const title = await page.getByTestId("post-card").first().locator("h3").innerText();
-    await page.getByTestId("post-card").first().click();
+    const title = `Delete Test ${Date.now()}`;
+
+    // Create a post owned by this test rather than deleting "the first post
+    // card on the homepage" — that shared-state pattern raced with other
+    // specs (e.g. smoke.spec.ts) that also publish/look up their own post
+    // under parallel workers.
+    await page.goto("/admin/posts");
+    await page.getByTestId("new-post-link").click();
+    await expect(page).toHaveURL(/\/admin\/posts\/new$/);
+    await page.getByTestId("post-title-input").fill(title);
+    await page.getByTestId("post-subtitle-input").fill("Delete test subtitle");
+    await page.getByTestId("post-category-select").selectOption("SQL");
+    await page.getByTestId("post-tags-input").fill("test");
+    await page.getByTestId("post-body-textarea").fill("Delete test body.");
+    await page.getByTestId("publish-button").click();
+    await expect(page).toHaveURL(/\/admin\/posts$/);
+    await expect(page.getByText(title)).toBeVisible();
+
+    await page.goto("/posts");
+    await page.getByText(title).click();
+    await expect(page).toHaveURL(/\/posts\//);
 
     page.once("dialog", (dialog) => dialog.accept());
     await page.getByTestId("post-detail-delete-button").click();
