@@ -102,18 +102,9 @@
   padding: 0.2rem 0.6rem;
 }
 
-.privateBadge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
+.privateLabel {
+  color: var(--ink-soft);
   font-weight: 700;
-  line-height: 1;
-  color: #fff;
-  background: #b91c1c;
-  padding: 5px 9px;
-  border-radius: 6px;
-  user-select: none;
-  pointer-events: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
