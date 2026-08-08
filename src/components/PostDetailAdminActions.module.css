@@ -1,0 +1,44 @@
+.actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editButton {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 0.9rem;
+}
+
+.editButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.deleteButton {
+  border: 1px solid #d64545;
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 0.9rem;
+  background: none;
+  color: #d64545;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.deleteButton:hover {
+  background: #d64545;
+  color: var(--bg);
+}
+
+.deleteButton:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
