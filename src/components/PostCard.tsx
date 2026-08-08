@@ -17,6 +17,9 @@ export default function PostCard({ post, index }: { post: Post; index?: number }
         {typeof index === "number" && (
           <span className={styles.indexBadge}>{String(index + 1).padStart(2, "0")}</span>
         )}
+        {post.isPublic === false && (
+          <span className={styles.privateBadge}>비공개</span>
+        )}
         {post.thumbnailUrl ? (
           // thumbnailUrl is the first image URL found in the post's markdown body
           // (extractFirstImageUrl) — an arbitrary external host, not a fixed bucket.
@@ -45,12 +48,6 @@ export default function PostCard({ post, index }: { post: Post; index?: number }
           <span>{formatDate(post.publishedAt ?? post.createdAt)}</span>
           <span aria-hidden="true">·</span>
           <span>{post.readMinutes} min read</span>
-          {post.isPublic === false && (
-            <>
-              <span aria-hidden="true">·</span>
-              <span className={styles.privateLabel}>Private</span>
-            </>
-          )}
         </div>
       </div>
     </Link>

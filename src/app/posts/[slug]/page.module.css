@@ -66,6 +66,7 @@
 }
 
 .hero {
+  position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: var(--radius-sm);
@@ -87,11 +88,21 @@
   margin: 0 0 0.75rem;
 }
 
-.privateLabel {
-  color: var(--ink-soft);
+.privateBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--accent);
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-pill);
+  padding: 5px 10px;
+  user-select: none;
+  pointer-events: none;
 }
 
 @media (max-width: 860px) {
