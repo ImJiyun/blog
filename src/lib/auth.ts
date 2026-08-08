@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 
 const JWT_EXPIRES_IN = "7d";
 
@@ -27,4 +28,9 @@ export function isAdmin(request: NextRequest): boolean {
   const token = request.cookies.get("token")?.value;
   if (!token) return false;
   return verifyToken(token);
+}
+
+export async function isAdminFromCookies(): Promise<boolean> {
+  const token = (await cookies()).get("token")?.value;
+  return !!token && verifyToken(token);
 }

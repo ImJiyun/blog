@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cookies } from "next/headers";
 import { getPost, getComments, categorySection } from "@/lib/api";
-import { verifyToken } from "@/lib/auth";
+import { isAdminFromCookies } from "@/lib/auth";
 import { extractHeadings } from "@/lib/toc";
 import MarkdownBody from "@/components/MarkdownBody";
 import TableOfContents from "@/components/TableOfContents";
@@ -41,8 +40,7 @@ export default async function PostDetailPage({
     notFound();
   }
 
-  const token = (await cookies()).get("token")?.value;
-  const isAdmin = !!token && verifyToken(token);
+  const isAdmin = await isAdminFromCookies();
 
   const [comments, headings] = await Promise.all([
     getComments(post.id),

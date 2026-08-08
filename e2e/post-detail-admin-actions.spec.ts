@@ -4,7 +4,9 @@ import { loginAsAdmin } from "./support/auth";
 test.describe("post detail admin actions", () => {
   test("is hidden for a signed-out visitor", async ({ page }) => {
     await page.goto("/");
-    await page.getByTestId("post-card").first().click();
+    const firstCard = page.getByTestId("post-card").first();
+    await expect(firstCard).toBeVisible();
+    await firstCard.click();
     await expect(page.getByTestId("post-detail-delete-button")).not.toBeVisible();
   });
 
@@ -36,14 +38,28 @@ test.describe("post detail admin actions", () => {
     await expect(page).toHaveURL(/\/admin\/posts$/);
     await expect(page.getByText(title)).toBeVisible();
 
-    await page.goto("/posts");
-    await page.getByText(title).click();
-    await expect(page).toHaveURL(/\/posts\//);
+    // If any assertion below fails before the delete button is clicked, the
+    // post created above would otherwise leak into the DB permanently (the
+    // exact kind of cross-spec pollution bbba0cc fixed elsewhere) — clean it
+    // up via the admin list as a fallback whenever the primary flow didn't
+    // already delete it.
+    try {
+      await page.goto("/posts");
+      await page.getByText(title).click();
+      await expect(page).toHaveURL(/\/posts\//);
 
-    page.once("dialog", (dialog) => dialog.accept());
-    await page.getByTestId("post-detail-delete-button").click();
+      page.once("dialog", (dialog) => dialog.accept());
+      await page.getByTestId("post-detail-delete-button").click();
 
-    await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByText(title)).not.toBeVisible();
+      await expect(page).toHaveURL(/\/$/);
+      await expect(page.getByText(title)).not.toBeVisible();
+    } finally {
+      await page.goto("/admin/posts");
+      const row = page.getByTestId("admin-post-row").filter({ hasText: title });
+      if (await row.isVisible().catch(() => false)) {
+        page.once("dialog", (dialog) => dialog.accept());
+        await row.getByTestId("delete-post-button").click();
+      }
+    }
   });
 });

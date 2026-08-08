@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "pretendard/dist/web/static/pretendard.css";
 import "./globals.css";
@@ -9,7 +8,7 @@ import Footer from "@/components/Footer";
 import PageViewTracker from "@/components/PageViewTracker";
 import AdminLoginShortcut from "@/components/AdminLoginShortcut";
 import AdminFab from "@/components/AdminFab";
-import { verifyToken } from "@/lib/auth";
+import { isAdminFromCookies } from "@/lib/auth";
 import { shouldEnableGA } from "@/lib/analytics";
 
 export const metadata: Metadata = {
@@ -30,8 +29,7 @@ const themeInitScript = `
 `;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const token = (await cookies()).get("token")?.value;
-  const isAdminSession = !!token && verifyToken(token);
+  const isAdminSession = await isAdminFromCookies();
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   const gaEnabled = shouldEnableGA({
     nodeEnv: process.env.NODE_ENV,

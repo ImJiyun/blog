@@ -24,13 +24,22 @@ export default function PostDetailAdminActions({
       router.push("/");
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "삭제에 실패했습니다.");
+    } finally {
       setPending(false);
     }
   }
 
   return (
     <div className={styles.actions}>
-      <Link href={`/admin/posts/${slug}/edit`} className={styles.editButton}>
+      <Link
+        href={`/admin/posts/${slug}/edit`}
+        className={styles.editButton}
+        aria-disabled={pending}
+        tabIndex={pending ? -1 : undefined}
+        onClick={(e) => {
+          if (pending) e.preventDefault();
+        }}
+      >
         수정
       </Link>
       <button
