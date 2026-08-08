@@ -34,21 +34,24 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
     <nav className={styles.toc} aria-label="Table of contents" data-testid="toc">
       <div className={styles.label}>목차</div>
       <ul className={styles.list}>
-        {headings.map((heading) => (
-          <li
-            key={heading.id}
-            className={heading.level === 3 ? styles.nested : undefined}
-          >
-            <a
-              href={`#${heading.id}`}
-              className={
-                activeId === heading.id ? `${styles.link} ${styles.active}` : styles.link
-              }
-            >
-              {heading.text}
-            </a>
-          </li>
-        ))}
+        {headings.map((heading) => {
+          const isTopLevel = heading.level !== 3;
+          const isActive = activeId === heading.id;
+          const linkClassName = [
+            styles.link,
+            isTopLevel && styles.topLevel,
+            isActive && styles.active,
+          ]
+            .filter(Boolean)
+            .join(" ");
+          return (
+            <li key={heading.id} className={heading.level === 3 ? styles.nested : undefined}>
+              <a href={`#${heading.id}`} className={linkClassName}>
+                {heading.text}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

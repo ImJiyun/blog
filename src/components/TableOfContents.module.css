@@ -46,8 +46,22 @@
   color: var(--ink);
 }
 
+.topLevel {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.topLevel:hover {
+  color: var(--accent);
+}
+
 .active {
   color: var(--accent);
+  font-weight: 700;
+}
+
+.topLevel.active {
+  font-weight: 900;
 }
 
 @media (max-width: 860px) {
