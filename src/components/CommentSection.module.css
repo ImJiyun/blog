@@ -1,7 +1,5 @@
 .section {
   margin: 3rem 0;
-  border-top: 1px solid var(--border);
-  padding-top: 2rem;
 }
 
 .heading {
