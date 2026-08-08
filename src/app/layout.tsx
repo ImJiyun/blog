@@ -8,6 +8,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import PageViewTracker from "@/components/PageViewTracker";
 import AdminLoginShortcut from "@/components/AdminLoginShortcut";
+import AdminFab from "@/components/AdminFab";
 import { verifyToken } from "@/lib/auth";
 import { shouldEnableGA } from "@/lib/analytics";
 
@@ -44,6 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <Nav />
         <AdminLoginShortcut isAdmin={isAdminSession} />
+        <AdminFab isAdmin={isAdminSession} />
         {children}
         <Footer />
         {gaEnabled && (
