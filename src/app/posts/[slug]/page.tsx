@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { getPost, getComments, categorySection } from "@/lib/api";
+import { verifyToken } from "@/lib/auth";
 import { extractHeadings } from "@/lib/toc";
 import MarkdownBody from "@/components/MarkdownBody";
 import TableOfContents from "@/components/TableOfContents";
@@ -12,6 +14,7 @@ import PostAuthorCard from "@/components/PostAuthorCard";
 import RelatedPosts from "@/components/RelatedPosts";
 import PostPrevNextNav from "@/components/PostPrevNextNav";
 import PostTagLinks from "@/components/PostTagLinks";
+import PostDetailAdminActions from "@/components/PostDetailAdminActions";
 import styles from "./page.module.css";
 
 function formatDate(iso: string | null): string {
@@ -38,6 +41,9 @@ export default async function PostDetailPage({
     notFound();
   }
 
+  const token = (await cookies()).get("token")?.value;
+  const isAdmin = !!token && verifyToken(token);
+
   const [comments, headings] = await Promise.all([
     getComments(post.id),
     Promise.resolve(extractHeadings(post.bodyMd)),
@@ -49,6 +55,9 @@ export default async function PostDetailPage({
       <PostEngagementTracker postSlug={post.slug} />
       <main className={styles.page}>
         <div className={styles.head}>
+          {isAdmin && (
+            <PostDetailAdminActions postId={post.id} slug={post.slug} />
+          )}
           <p className={styles.breadcrumb}>
             <Link href={categorySection(post.category).href}>
               {categorySection(post.category).label}
