@@ -1,0 +1,21 @@
+.badge {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--accent);
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+}
+
+.badge:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.badge:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

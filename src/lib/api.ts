@@ -210,6 +210,13 @@ export async function login(password: string): Promise<void> {
   }
 }
 
+export async function logout(): Promise<void> {
+  const response = await fetch("/api/auth/logout", { method: "POST" });
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Logout failed"));
+  }
+}
+
 export async function deletePost(id: string): Promise<void> {
   const response = await fetch(`/api/posts/${id}`, { method: "DELETE" });
   if (!response.ok && response.status !== 204) {
