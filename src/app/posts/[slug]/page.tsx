@@ -90,7 +90,10 @@ export default async function PostDetailPage({
           <h1 className={styles.title}>{post.title}</h1>
           {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
           <p className={styles.meta}>
-            {formatDate(post.publishedAt)} · {post.readMinutes} min read
+            <span data-testid="post-detail-date">
+              {formatDate(post.publishedAt ?? post.createdAt)}
+            </span>{" "}
+            · {post.readMinutes} min read
           </p>
         </div>
 
