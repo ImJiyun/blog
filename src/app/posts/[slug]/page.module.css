@@ -89,10 +89,10 @@
   margin: 0 0 0.75rem;
 }
 
-.privateBadge {
+.statusBadge {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 0;
+  left: 0;
   font-family: var(--font-mono);
   font-size: 10.5px;
   font-weight: 700;
@@ -104,6 +104,14 @@
   padding: 5px 10px;
   user-select: none;
   pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .statusBadge {
+    position: static;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
 }
 
 @media (max-width: 860px) {

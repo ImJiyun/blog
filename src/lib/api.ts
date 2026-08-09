@@ -37,6 +37,17 @@ export type Comment = {
   createdAt: string;
 };
 
+// Single source of truth for the draft/private status label shown on both
+// PostCard and the post detail page — kept as one function after #127 (the
+// two views drifted out of sync when this logic was duplicated inline).
+export function getPostStatusBadgeLabel(
+  post: Pick<Post, "status" | "isPublic">,
+): string | null {
+  if (post.status === "draft") return "임시저장";
+  if (post.isPublic === false) return "비공개";
+  return null;
+}
+
 export type TagCount = { tag: string; count: number };
 
 export const STUDY_CATEGORIES = [
