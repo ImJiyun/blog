@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPosts } from "@/lib/api";
+import { getPosts, mergePublishedAndDrafts } from "@/lib/api";
 import DeletePostButton from "@/components/DeletePostButton";
 import styles from "./page.module.css";
 
@@ -11,9 +11,7 @@ export default async function AdminPostsPage() {
     getPosts({ status: "published" }),
     getPosts({ status: "draft" }),
   ]);
-  const posts = [...drafts, ...published].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  );
+  const posts = mergePublishedAndDrafts(published, drafts);
 
   return (
     <main className={styles.page}>

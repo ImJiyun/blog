@@ -137,12 +137,14 @@ export function mergePublishedAndDrafts(published: Post[], drafts: Post[]): Post
 }
 
 export async function getViewablePosts(
-  params: GetPostsParams,
+  params: Omit<GetPostsParams, "status">,
   isAdmin: boolean,
 ): Promise<Post[]> {
-  const published = await getPosts({ ...params, status: "published" });
-  if (!isAdmin) return published;
-  const drafts = await getPosts({ ...params, status: "draft" });
+  if (!isAdmin) return getPosts({ ...params, status: "published" });
+  const [published, drafts] = await Promise.all([
+    getPosts({ ...params, status: "published" }),
+    getPosts({ ...params, status: "draft" }),
+  ]);
   return mergePublishedAndDrafts(published, drafts);
 }
 
