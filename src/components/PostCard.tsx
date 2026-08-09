@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Post } from "@/lib/api";
+import { getPostStatusBadgeLabel, type Post } from "@/lib/api";
 import styles from "./PostCard.module.css";
 
 function formatDate(iso: string | null): string {
@@ -11,20 +11,16 @@ function formatDate(iso: string | null): string {
 }
 
 export default function PostCard({ post, index }: { post: Post; index?: number }) {
+  const statusLabel = getPostStatusBadgeLabel(post);
   return (
     <Link href={`/posts/${post.slug}`} className={styles.card} data-testid="post-card">
       <div className={styles.thumbnail}>
         {typeof index === "number" && (
           <span className={styles.indexBadge}>{String(index + 1).padStart(2, "0")}</span>
         )}
-        {post.status === "draft" && (
+        {statusLabel && (
           <span className={styles.statusBadge} data-testid="post-status-badge">
-            임시저장
-          </span>
-        )}
-        {post.status === "published" && post.isPublic === false && (
-          <span className={styles.statusBadge} data-testid="post-status-badge">
-            비공개
+            {statusLabel}
           </span>
         )}
         {post.thumbnailUrl ? (

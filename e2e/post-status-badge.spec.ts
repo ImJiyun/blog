@@ -37,6 +37,18 @@ test.describe("post status badge", () => {
 
       const privateCard = page.getByTestId("post-card").filter({ hasText: privateTitle });
       await expect(privateCard.getByTestId("post-status-badge")).toHaveText("비공개");
+
+      // The detail page must show the same status the card did (#127) — neither
+      // post has a thumbnail, so this also covers the no-thumbnail case.
+      await draftCard.click();
+      await expect(page).toHaveURL(/\/posts\/[^/]+$/);
+      await expect(page.getByTestId("post-status-badge")).toHaveText("임시저장");
+      await page.goBack();
+
+      await privateCard.click();
+      await expect(page).toHaveURL(/\/posts\/[^/]+$/);
+      await expect(page.getByTestId("post-status-badge")).toHaveText("비공개");
+      await page.goBack();
     } finally {
       // Clean up the draft post. Isolated in its own try/catch so a failure
       // here can never prevent the private-post cleanup below from running.

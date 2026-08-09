@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPost, getComments, categorySection } from "@/lib/api";
+import { getPost, getComments, categorySection, getPostStatusBadgeLabel } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 import { extractHeadings } from "@/lib/toc";
 import MarkdownBody from "@/components/MarkdownBody";
@@ -41,6 +41,7 @@ export default async function PostDetailPage({
   }
 
   const isAdmin = await isAdminFromCookies();
+  const statusLabel = getPostStatusBadgeLabel(post);
 
   const [comments, headings] = await Promise.all([
     getComments(post.id),
@@ -55,6 +56,11 @@ export default async function PostDetailPage({
         <div className={styles.head}>
           {isAdmin && (
             <PostDetailAdminActions postId={post.id} slug={post.slug} />
+          )}
+          {statusLabel && (
+            <span className={styles.statusBadge} data-testid="post-status-badge">
+              {statusLabel}
+            </span>
           )}
           <p className={styles.breadcrumb}>
             <Link href={categorySection(post.category).href}>
@@ -76,9 +82,6 @@ export default async function PostDetailPage({
                 alt=""
                 className={styles.heroImage}
               />
-              {post.isPublic === false && (
-                <span className={styles.privateBadge}>비공개</span>
-              )}
             </div>
           )}
 
