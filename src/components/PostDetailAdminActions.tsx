@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { deletePost } from "@/lib/api";
+import { useDeletePost } from "@/lib/useDeletePost";
 import styles from "./PostDetailAdminActions.module.css";
 
 export default function PostDetailAdminActions({
@@ -14,20 +13,12 @@ export default function PostDetailAdminActions({
   slug: string;
 }) {
   const router = useRouter();
-  const [pending, setPending] = useState(false);
-
-  async function handleDelete() {
-    if (!window.confirm("이 글을 삭제할까요?")) return;
-    setPending(true);
-    try {
-      await deletePost(postId);
-      router.push("/");
-    } catch (err) {
-      window.alert(err instanceof Error ? err.message : "삭제에 실패했습니다.");
-    } finally {
-      setPending(false);
-    }
-  }
+  const { pending, handleDelete } = useDeletePost({
+    postId,
+    confirmMessage: "이 글을 삭제할까요?",
+    errorMessage: "삭제에 실패했습니다.",
+    onSuccess: () => router.push("/"),
+  });
 
   return (
     <div className={styles.actions}>

@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
 const JWT_EXPIRES_IN = "7d";
 
@@ -30,7 +31,9 @@ export function isAdmin(request: NextRequest): boolean {
   return verifyToken(token);
 }
 
-export async function isAdminFromCookies(): Promise<boolean> {
+// Wrapped in React's cache() so layout.tsx and page.tsx each calling this for
+// the same request share one cookies() read + jwt.verify() instead of two.
+export const isAdminFromCookies = cache(async (): Promise<boolean> => {
   const token = (await cookies()).get("token")?.value;
   return !!token && verifyToken(token);
-}
+});
