@@ -1,7 +1,8 @@
 import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
-import { getPosts, getTags, STUDY_CATEGORIES } from "@/lib/api";
+import { getViewablePosts, getTags, STUDY_CATEGORIES } from "@/lib/api";
+import { isAdminFromCookies } from "@/lib/auth";
 
 type SearchParams = { category?: string; tag?: string; q?: string };
 const ALLOWED: readonly string[] = STUDY_CATEGORIES;
@@ -13,9 +14,10 @@ export default async function StudyPage({
 }) {
   const { category, tag, q } = await searchParams;
   const effectiveCategory = category && ALLOWED.includes(category) ? category : undefined;
+  const isAdmin = await isAdminFromCookies();
 
   const [posts, tags] = await Promise.all([
-    getPosts({ category: effectiveCategory, tag, q }),
+    getViewablePosts({ category: effectiveCategory, tag, q }, isAdmin),
     getTags(STUDY_CATEGORIES),
   ]);
   const filtered = effectiveCategory

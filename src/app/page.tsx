@@ -1,8 +1,9 @@
 import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
-import { getPosts, getTags, LATEST_CATEGORIES, LIFE_CATEGORIES } from "@/lib/api";
+import { getViewablePosts, getTags, LATEST_CATEGORIES, LIFE_CATEGORIES } from "@/lib/api";
 import type { Post } from "@/lib/api";
+import { isAdminFromCookies } from "@/lib/auth";
 
 type SearchParams = { tag?: string };
 
@@ -16,9 +17,10 @@ export default async function HomePage({
   searchParams: Promise<SearchParams>;
 }) {
   const { tag } = await searchParams;
+  const isAdmin = await isAdminFromCookies();
 
   const [posts, tags] = await Promise.all([
-    getPosts({ status: "published", tag }),
+    getViewablePosts({ tag }, isAdmin),
     getTags(LATEST_CATEGORIES),
   ]);
   const latest: Post[] = posts.filter((post) => !isLifeCategory(post.category));
