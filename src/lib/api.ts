@@ -130,6 +130,22 @@ export async function getPosts(params: GetPostsParams = {}): Promise<Post[]> {
   return response.json();
 }
 
+export function mergePublishedAndDrafts(published: Post[], drafts: Post[]): Post[] {
+  return [...drafts, ...published].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+}
+
+export async function getViewablePosts(
+  params: GetPostsParams,
+  isAdmin: boolean,
+): Promise<Post[]> {
+  const published = await getPosts({ ...params, status: "published" });
+  if (!isAdmin) return published;
+  const drafts = await getPosts({ ...params, status: "draft" });
+  return mergePublishedAndDrafts(published, drafts);
+}
+
 export async function getPost(slug: string): Promise<PostDetail | null> {
   // Next's dynamic route params arrive still percent-encoded for non-ASCII
   // segments (verified against this Next/Turbopack version) — decode first so
