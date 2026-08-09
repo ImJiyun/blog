@@ -17,8 +17,15 @@ export default function PostCard({ post, index }: { post: Post; index?: number }
         {typeof index === "number" && (
           <span className={styles.indexBadge}>{String(index + 1).padStart(2, "0")}</span>
         )}
-        {post.isPublic === false && (
-          <span className={styles.privateBadge}>비공개</span>
+        {post.status === "draft" && (
+          <span className={styles.statusBadge} data-testid="post-status-badge">
+            임시저장
+          </span>
+        )}
+        {post.status === "published" && post.isPublic === false && (
+          <span className={styles.statusBadge} data-testid="post-status-badge">
+            비공개
+          </span>
         )}
         {post.thumbnailUrl ? (
           // thumbnailUrl is the first image URL found in the post's markdown body
