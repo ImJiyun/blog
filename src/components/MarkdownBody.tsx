@@ -9,8 +9,9 @@ import styles from "./MarkdownBody.module.css";
 function CodeRenderer({
   className,
   children,
+  node: _node,
   ...props
-}: ComponentPropsWithoutRef<"code">) {
+}: ComponentPropsWithoutRef<"code"> & { node?: unknown }) {
   // Fenced/block code already carries a className (language-xxx and/or
   // hljs, added by remark/rehype-highlight) — leave it untouched, its
   // token coloring comes entirely from MarkdownBody.module.css.
