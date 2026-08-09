@@ -255,13 +255,13 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
           disabled={saving}
           data-testid="cancel-button"
         >
-          Cancel
+          취소
         </button>
         <button type="button" onClick={() => handleSave("draft")} disabled={saving} data-testid="save-draft-button">
-          Save Draft
+          임시 저장
         </button>
         <button type="button" onClick={() => handleSave("published")} disabled={saving} data-testid="publish-button">
-          Publish
+          {isPublic ? "공개로 게시" : "비공개로 게시"}
         </button>
       </div>
     </form>
