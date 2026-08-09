@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_response.stdout // \"\"' | { out=$(cat); url=$(printf '%s' \"$out\" | grep -oE 'https://github\\.com/[^ /]+/[^ /]+/pull/[0-9]+' | tail -1); if [ -n \"$url\" ]; then jq -n --arg url \"$url\" '{hookSpecificOutput:{hookEventName:\"PostToolUse\",additionalContext:(\"A pull request was just created: \" + $url + \". Project routine: run the code-review skill (code-review:code-review) on this PR now.\")}}'; fi; }",
+            "command": "jq -r 'select((.tool_input.command // \"\") | test(\"gh pr create\")) | .tool_response.stdout // \"\"' | { out=$(cat); url=$(printf '%s' \"$out\" | grep -oE 'https://github\\.com/[^ /]+/[^ /]+/pull/[0-9]+' | tail -1); if [ -n \"$url\" ]; then jq -n --arg url \"$url\" '{hookSpecificOutput:{hookEventName:\"PostToolUse\",additionalContext:(\"A pull request was just created: \" + $url + \". Project routine: run the code-review skill (code-review:code-review) on this PR now.\")}}'; fi; }",
             "if": "Bash(gh pr create*)",
             "statusMessage": "Checking for new PR to auto-review..."
           }
