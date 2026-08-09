@@ -45,6 +45,12 @@ test.describe("code block and inline code accent highlighting", () => {
       await expect(fencedFunctionTitle).toBeVisible();
       await expect(fencedString).toBeVisible();
 
+      // Regression guard for a prior bug: react-markdown injects a `node`
+      // hast-AST prop into custom components, and CodeRenderer used to spread
+      // it straight onto the DOM element, leaking node="[object Object]" onto
+      // every code span. Confirm it no longer appears.
+      expect(await fencedKeyword.evaluate((el) => el.getAttribute("node"))).toBeNull();
+
       const [keywordColor, functionTitleColor, stringColor] = await Promise.all([
         fencedKeyword.evaluate((el) => getComputedStyle(el).color),
         fencedFunctionTitle.evaluate((el) => getComputedStyle(el).color),
@@ -68,12 +74,13 @@ test.describe("code block and inline code accent highlighting", () => {
         .locator("span")
         .first()
         .evaluate((el) => getComputedStyle(el).color);
-      const inlineNonKeywordColor = await inlineNonKeyword.evaluate(
-        (el) => getComputedStyle(el).color,
-      );
 
       expect(inlineKeywordColor).toBe(keywordColor);
-      expect(inlineNonKeywordColor).not.toBe(keywordColor);
+      // The non-keyword's own <code> color is always the paragraph ink color
+      // regardless of whether an accent span leaked inside it, so comparing
+      // getComputedStyle on the <code> element itself can never fail — assert
+      // structurally instead: no accent <span> was created inside it at all.
+      await expect(inlineNonKeyword.locator("span")).toHaveCount(0);
     } finally {
       try {
         await page.goto("/admin/posts");

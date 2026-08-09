@@ -81,12 +81,13 @@
 }
 
 /* rehype-highlight tokens, deliberately kept inside the app's own palette instead of
-   a stock multi-color theme — spec: "Code blocks are bordered --card-bg panels, not
-   syntax-decorated further." This gives just enough token separation to read code
-   without turning the panel into a rainbow theme. */
+   a stock multi-color theme — spec: "syntax highlighting stays inside the single
+   --accent color (keywords, built-ins, function/class names, types)." This gives just
+   enough token separation to read code without turning the panel into a rainbow theme. */
 .body :global(.hljs-keyword),
 .body :global(.hljs-built_in),
 .body :global(.hljs-title.function_),
+.body :global(.hljs-title.class_),
 .body :global(.hljs-type) {
   color: var(--accent);
 }
