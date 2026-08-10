@@ -11,12 +11,10 @@ import AdminModeBadge from "./AdminModeBadge";
 
 const TABS = [
   { label: "Latest", href: "/" },
-  { label: "Study", href: "/study" },
+  { label: "Data", href: "/data" },
+  { label: "Dev", href: "/dev" },
   { label: "Life", href: "/life" },
-  { label: "Project", href: "/project" },
 ];
-
-const GITHUB_URL = "https://github.com/ImJiyun";
 
 function isActiveTab(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
@@ -25,8 +23,8 @@ function isActiveTab(pathname: string, href: string): boolean {
 
 // Post detail pages and the whole admin area are functional/reading screens, not
 // browsing entry points — the avatar and site-wide tab nav are dropped there so they
-// don't compete with the article body or admin tools. The wordmark, theme toggle, and
-// GitHub link stay everywhere.
+// don't compete with the article body or admin tools. The wordmark and theme toggle
+// stay everywhere.
 function isMinimalHeader(pathname: string): boolean {
   return pathname.startsWith("/posts/") || pathname.startsWith("/admin");
 }
@@ -44,14 +42,6 @@ export default function Nav({ isAdmin }: { isAdmin: boolean }) {
         <div className={styles.topBarActions}>
           {isAdmin && <AdminModeBadge />}
           <ThemeToggle />
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.githubButton}
-          >
-            GitHub
-          </a>
         </div>
       </div>
 
