@@ -50,9 +50,7 @@ describe("sectionCategories", () => {
     expect(sectionCategories("Python")).toBe(DATA_CATEGORIES);
   });
 
-  it("returns DEV_CATEGORIES for a dev category (vacuous today, holds once Dev categories exist)", () => {
-    // No Dev category exists yet, so this exercises the fallback branch shape
-    // rather than a real membership check — see the ALL_CATEGORIES fallback test below.
+  it("returns LIFE_CATEGORIES for a life category", () => {
     expect(sectionCategories("Travel")).toBe(LIFE_CATEGORIES);
   });
 
