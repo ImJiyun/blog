@@ -54,11 +54,12 @@ describe("sectionCategories", () => {
     expect(sectionCategories("Travel")).toBe(LIFE_CATEGORIES);
   });
 
-  it("falls back to non-data/non-life categories for Projects", () => {
+  it("falls back to non-data/non-dev/non-life categories for Projects", () => {
     expect(sectionCategories("Projects")).toEqual(
       ALL_CATEGORIES.filter(
         (c) =>
           !(DATA_CATEGORIES as readonly string[]).includes(c) &&
+          !(DEV_CATEGORIES as readonly string[]).includes(c) &&
           !(LIFE_CATEGORIES as readonly string[]).includes(c),
       ),
     );

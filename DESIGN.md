@@ -87,7 +87,7 @@ Dark mode follows OS preference (`prefers-color-scheme`), with `[data-theme="dar
 - **Card grid**: 2 columns. Photo if `thumbnailUrl` exists, else flat `--card-bg` block
   with category name in small-caps mono. Each card also gets a numbered `01`/`02`/...
   badge (mono, `--ink`-on-`--bg` chip) pinned to the thumbnail's top-left corner.
-- **Tag filter chips** (`/posts`, `/study`, `/life`, and now the home feed): `--radius-pill`
+- **Tag filter chips** (`/posts`, `/data`, `/dev`, `/life`, and now the home feed): `--radius-pill`
   pills, not bordered rectangles. Tag name in `--ink`, count in small `--ink-soft` mono.
   Active chip is a solid `--accent` fill with `--bg`-colored text. `PostCard` also shows
   each post's own tags as static (non-interactive) `--radius-pill` pills — those aren't
