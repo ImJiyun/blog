@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { loginAsAdmin } from "./support/auth";
 
 const FAB = "admin-fab-new-post";
-const ALLOWED_PATHS = ["/", "/study", "/life", "/project", "/posts"];
+const ALLOWED_PATHS = ["/", "/data", "/dev", "/life", "/posts"];
 
 test.describe("admin FAB", () => {
   test("is hidden for a signed-out visitor on every public list page", async ({ page }) => {
@@ -28,7 +28,7 @@ test.describe("admin FAB", () => {
 
   test("clicking it navigates to the new-post page", async ({ page }) => {
     await loginAsAdmin(page);
-    await page.goto("/study");
+    await page.goto("/data");
     await page.getByTestId(FAB).click();
     await expect(page).toHaveURL(/\/admin\/posts\/new$/);
   });
