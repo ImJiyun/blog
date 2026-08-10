@@ -1,13 +1,4 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(git -C /Users/jiyun/blog log -p --follow -- src/app/api/posts/[id]/comments/route.ts)",
-      "Bash(git -C /Users/jiyun/blog log -p -- src/app/api/auth/login/route.ts)",
-      "Bash(git -C /Users/jiyun/blog log -p -- 'src/app/api/posts/[id]/comments/route.ts')",
-      "Bash(xargs -I{} sh -c 'echo ==={}===; cat {}')",
-      "Bash(cd /Users/jiyun/blk 2>/dev/null; cd /Users/jiyun/blog; sed -n '1,40p' src/app/posts/page.tsx; echo \"---\"; find src/app -name \"not-found.tsx\"; echo \"---layout---\"; cat src/app/layout.tsx 2>/dev/null | head -40)"
-    ]
-  },
   "hooks": {
     "PostToolUse": [
       {
