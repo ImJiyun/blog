@@ -7,9 +7,9 @@ describe("isAdminFabPath", () => {
   });
 
   it("returns true for each public list page", () => {
-    expect(isAdminFabPath("/study")).toBe(true);
+    expect(isAdminFabPath("/data")).toBe(true);
+    expect(isAdminFabPath("/dev")).toBe(true);
     expect(isAdminFabPath("/life")).toBe(true);
-    expect(isAdminFabPath("/project")).toBe(true);
     expect(isAdminFabPath("/posts")).toBe(true);
   });
 
@@ -25,7 +25,11 @@ describe("isAdminFabPath", () => {
     expect(isAdminFabPath("/random")).toBe(false);
   });
 
+  it("returns false for the removed /project path", () => {
+    expect(isAdminFabPath("/project")).toBe(false);
+  });
+
   it("returns false for a trailing-slash variant not in the allow-list", () => {
-    expect(isAdminFabPath("/study/")).toBe(false);
+    expect(isAdminFabPath("/data/")).toBe(false);
   });
 });
