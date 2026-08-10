@@ -1,13 +1,13 @@
 import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
-import { getViewablePosts, getTags, STUDY_CATEGORIES } from "@/lib/api";
+import { getViewablePosts, getTags, DATA_CATEGORIES } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 
 type SearchParams = { category?: string; tag?: string; q?: string };
-const ALLOWED: readonly string[] = STUDY_CATEGORIES;
+const ALLOWED: readonly string[] = DATA_CATEGORIES;
 
-export default async function StudyPage({
+export default async function DataPage({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
@@ -18,7 +18,7 @@ export default async function StudyPage({
 
   const [posts, tags] = await Promise.all([
     getViewablePosts({ category: effectiveCategory, tag, q }, isAdmin),
-    getTags(STUDY_CATEGORIES),
+    getTags(DATA_CATEGORIES),
   ]);
   const filtered = effectiveCategory
     ? posts
@@ -26,7 +26,7 @@ export default async function StudyPage({
 
   return (
     <main>
-      <TagChips tags={tags} basePath="/study" />
+      <TagChips tags={tags} basePath="/data" />
       {filtered.length === 0 ? (
         <p style={{ textAlign: "center", padding: "3rem 1.5rem", color: "var(--ink-soft)" }}>
           No posts found.
