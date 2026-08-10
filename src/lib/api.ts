@@ -50,7 +50,7 @@ export function getPostStatusBadgeLabel(
 
 export type TagCount = { tag: string; count: number };
 
-export const STUDY_CATEGORIES = [
+export const DATA_CATEGORIES = [
   "SQL",
   "Python",
   "Statistics",
@@ -58,10 +58,13 @@ export const STUDY_CATEGORIES = [
   "PowerBI",
 ] as const;
 
+export const DEV_CATEGORIES: readonly string[] = [];
+
 export const LIFE_CATEGORIES = ["Travel", "Career"] as const;
 
 export const ALL_CATEGORIES = [
-  ...STUDY_CATEGORIES,
+  ...DATA_CATEGORIES,
+  ...DEV_CATEGORIES,
   "Projects",
   ...LIFE_CATEGORIES,
 ] as const;
@@ -74,8 +77,11 @@ export function categorySection(category: string): { label: string; href: string
   if ((LIFE_CATEGORIES as readonly string[]).includes(category)) {
     return { label: "Life", href: "/life" };
   }
-  if ((STUDY_CATEGORIES as readonly string[]).includes(category)) {
-    return { label: "Study", href: "/study" };
+  if ((DATA_CATEGORIES as readonly string[]).includes(category)) {
+    return { label: "Data", href: "/data" };
+  }
+  if ((DEV_CATEGORIES as readonly string[]).includes(category)) {
+    return { label: "Dev", href: "/dev" };
   }
   return { label: "Latest", href: "/" };
 }
@@ -84,12 +90,16 @@ export function sectionCategories(category: string): readonly string[] {
   if ((LIFE_CATEGORIES as readonly string[]).includes(category)) {
     return LIFE_CATEGORIES;
   }
-  if ((STUDY_CATEGORIES as readonly string[]).includes(category)) {
-    return STUDY_CATEGORIES;
+  if ((DATA_CATEGORIES as readonly string[]).includes(category)) {
+    return DATA_CATEGORIES;
+  }
+  if ((DEV_CATEGORIES as readonly string[]).includes(category)) {
+    return DEV_CATEGORIES;
   }
   return ALL_CATEGORIES.filter(
     (c) =>
-      !(STUDY_CATEGORIES as readonly string[]).includes(c) &&
+      !(DATA_CATEGORIES as readonly string[]).includes(c) &&
+      !(DEV_CATEGORIES as readonly string[]).includes(c) &&
       !(LIFE_CATEGORIES as readonly string[]).includes(c),
   );
 }
