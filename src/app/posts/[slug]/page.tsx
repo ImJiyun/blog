@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPost, getComments, categorySection, getPostStatusBadgeLabel } from "@/lib/api";
+import { getPost, getComments, getCategories, categorySection, getPostStatusBadgeLabel } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 import { extractHeadings } from "@/lib/toc";
 import MarkdownBody from "@/components/MarkdownBody";
@@ -43,9 +43,10 @@ export default async function PostDetailPage({
   const isAdmin = await isAdminFromCookies();
   const statusLabel = getPostStatusBadgeLabel(post);
 
-  const [comments, headings] = await Promise.all([
+  const [comments, headings, categories] = await Promise.all([
     getComments(post.id),
     Promise.resolve(extractHeadings(post.bodyMd)),
+    getCategories(),
   ]);
 
   return (
@@ -63,8 +64,8 @@ export default async function PostDetailPage({
             </span>
           )}
           <p className={styles.breadcrumb}>
-            <Link href={categorySection(post.category).href}>
-              {categorySection(post.category).label}
+            <Link href={categorySection(post.category, categories).href}>
+              {categorySection(post.category, categories).label}
             </Link>{" "}
             / {post.category}
           </p>

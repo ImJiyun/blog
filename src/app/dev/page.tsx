@@ -1,11 +1,10 @@
 import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
-import { getViewablePosts, DEV_CATEGORIES } from "@/lib/api";
+import { getViewablePosts, getCategories } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 
 type SearchParams = { category?: string; tag?: string; q?: string };
-const ALLOWED: readonly string[] = DEV_CATEGORIES;
 
 export default async function DevPage({
   searchParams,
@@ -13,13 +12,15 @@ export default async function DevPage({
   searchParams: Promise<SearchParams>;
 }) {
   const { category, tag, q } = await searchParams;
-  const effectiveCategory = category && ALLOWED.includes(category) ? category : undefined;
   const isAdmin = await isAdminFromCookies();
+  const categories = await getCategories();
+  const allowed = categories.filter((c) => c.section === "dev").map((c) => c.name);
+  const effectiveCategory = category && allowed.includes(category) ? category : undefined;
 
   const posts = await getViewablePosts({ category: effectiveCategory, tag, q }, isAdmin);
   const filtered = effectiveCategory
     ? posts
-    : posts.filter((post) => ALLOWED.includes(post.category));
+    : posts.filter((post) => allowed.includes(post.category));
 
   return (
     <main>
