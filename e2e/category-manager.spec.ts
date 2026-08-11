@@ -9,19 +9,23 @@ test.describe("category manager", () => {
     const renamedName = `${categoryName} Renamed`;
     const postTitle = `Category Manager Test ${Date.now()}`;
 
-    await page.goto("/");
-    await page.getByTestId("category-manager-button").click();
-    await expect(page.getByTestId("category-manager-modal")).toBeVisible();
-
-    await page.getByTestId("category-new-name-input").fill(categoryName);
-    await page.getByTestId("category-new-section-select").selectOption("dev");
-    await page.getByTestId("category-add-button").click();
-    await expect(
-      page.getByTestId("category-row").filter({ hasText: categoryName }),
-    ).toBeVisible();
-    await page.getByTestId("category-manager-close").click();
-
+    // Everything from here on (including category creation) is wrapped in
+    // try/finally so a thrown assertion anywhere — even before the happy
+    // path reaches its own delete-with-reassignment step — still triggers
+    // best-effort cleanup below, instead of leaking the category into the DB.
     try {
+      await page.goto("/");
+      await page.getByTestId("category-manager-button").click();
+      await expect(page.getByTestId("category-manager-modal")).toBeVisible();
+
+      await page.getByTestId("category-new-name-input").fill(categoryName);
+      await page.getByTestId("category-new-section-select").selectOption("dev");
+      await page.getByTestId("category-add-button").click();
+      await expect(
+        page.getByTestId("category-row").filter({ hasText: categoryName }),
+      ).toBeVisible();
+      await page.getByTestId("category-manager-close").click();
+
       // The new category must be selectable when writing a post.
       await page.goto("/admin/posts/new");
       await page.getByTestId("post-title-input").fill(postTitle);
@@ -68,6 +72,7 @@ test.describe("category manager", () => {
       ).toHaveCount(0);
       await page.getByTestId("category-manager-close").click();
     } finally {
+      // Best-effort post cleanup: delete the test post if it still exists.
       try {
         await page.goto("/admin/posts");
         const row = page.getByTestId("admin-post-row").filter({ hasText: postTitle });
@@ -79,9 +84,47 @@ test.describe("category manager", () => {
       } catch {
         // best effort — verified below, outside the finally block
       }
+
+      // Best-effort category cleanup: the happy path already deletes the
+      // category itself, so this is normally a no-op — but if the test
+      // failed at any point between creation and that delete step (including
+      // before renaming), the category — under either its original or
+      // renamed name — would otherwise leak into the DB with no cleanup
+      // attempt. `categoryName` is a substring of `renamedName`, so a single
+      // hasText filter on `categoryName` matches the row regardless of which
+      // name it currently has.
+      try {
+        await page.goto("/");
+        await page.getByTestId("category-manager-button").click();
+        await expect(page.getByTestId("category-manager-modal")).toBeVisible();
+        const leftoverRow = page.getByTestId("category-row").filter({ hasText: categoryName });
+        if (await leftoverRow.isVisible().catch(() => false)) {
+          await leftoverRow.getByTestId("category-delete-start").click();
+          // Only present when the category still has posts attached (i.e.
+          // the post cleanup above itself failed) — reassign to whatever
+          // other category happens to be first in the list, since which one
+          // doesn't matter for a cleanup path.
+          const reassignSelect = leftoverRow.getByTestId("category-reassign-select");
+          if (await reassignSelect.isVisible().catch(() => false)) {
+            await reassignSelect.selectOption({ index: 1 });
+          }
+          await leftoverRow.getByTestId("category-delete-confirm").click();
+          await expect(leftoverRow).toHaveCount(0);
+        }
+        await page.getByTestId("category-manager-close").click();
+      } catch {
+        // best effort — verified below, outside the finally block
+      }
     }
 
     await page.goto("/admin/posts");
     await expect(page.getByTestId("admin-post-row").filter({ hasText: postTitle })).toHaveCount(0);
+
+    await page.goto("/");
+    await page.getByTestId("category-manager-button").click();
+    await expect(
+      page.getByTestId("category-row").filter({ hasText: categoryName }),
+    ).toHaveCount(0);
+    await page.getByTestId("category-manager-close").click();
   });
 });
