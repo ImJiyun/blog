@@ -1,0 +1,214 @@
+.badge {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--accent);
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+}
+
+.badge:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: min(480px, 92vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  box-sizing: border-box;
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin: 0;
+  text-align: center;
+}
+
+.error {
+  color: #d64545;
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+}
+
+.loading {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-align: center;
+  margin: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.idleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.nameGroup {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+}
+
+.actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.inlineRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.deleteColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.confirmText {
+  font-size: 0.82rem;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.inlineInput {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.primaryButton,
+.ghostButton,
+.dangerButton,
+.dangerGhostButton {
+  border-radius: 6px;
+  padding: 0.45rem 0.8rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.primaryButton {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+}
+
+.ghostButton {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink-soft);
+}
+
+.dangerButton {
+  border: none;
+  background: #ef4444;
+  color: #fff;
+}
+
+.dangerButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.dangerGhostButton {
+  border: 1px solid #ef4444;
+  background: transparent;
+  color: #ef4444;
+}
+
+.sectionSelect {
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  background: var(--bg);
+  color: var(--ink-soft);
+}
+
+.addRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.closeButton {
+  align-self: flex-end;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  cursor: pointer;
+}

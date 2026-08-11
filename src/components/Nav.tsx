@@ -8,6 +8,7 @@ import styles from "./Nav.module.css";
 import ThemeToggle from "./ThemeToggle";
 import NavSearch from "./NavSearch";
 import AdminModeBadge from "./AdminModeBadge";
+import CategoryManager from "./CategoryManager";
 
 const TABS = [
   { label: "Latest", href: "/" },
@@ -40,6 +41,7 @@ export default function Nav({ isAdmin }: { isAdmin: boolean }) {
           <span className={styles.wordmarkPrompt}>&gt;</span>hanul.dev
         </Link>
         <div className={styles.topBarActions}>
+          {isAdmin && <CategoryManager />}
           {isAdmin && <AdminModeBadge />}
           <ThemeToggle />
         </div>
