@@ -32,8 +32,11 @@ steps:
   # Guards against a race where two commits land on main close together:
   # both builds finish around the same time, and whichever's deploy step
   # runs last wins — even if it's for the older commit. If a newer build
-  # from this same trigger already exists by the time we're ready to
-  # deploy, skip and let that build's deploy own the final state instead.
+  # from this same trigger has already succeeded by the time we're ready
+  # to deploy, skip and let that build's deploy own the final state
+  # instead. Filtering on status=SUCCESS (not just existence) means a
+  # newer build that's still running or that fails doesn't block this
+  # one from deploying.
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     entrypoint: bash
     args:
@@ -41,7 +44,7 @@ steps:
       - |
         set -e
         MY_CREATE_TIME=$$(gcloud builds describe $BUILD_ID --region=us-central1 --format="value(createTime)")
-        FILTER='substitutions.TRIGGER_NAME="$TRIGGER_NAME" AND createTime>"'"$$MY_CREATE_TIME"'"'
+        FILTER='substitutions.TRIGGER_NAME="$TRIGGER_NAME" AND createTime>"'"$$MY_CREATE_TIME"'" AND status="SUCCESS"'
         NEWER_BUILD=$$(gcloud builds list --region=us-central1 --filter="$$FILTER" --format="value(id)" --limit=1)
         if [ -n "$$NEWER_BUILD" ]; then
           echo "Skipping deploy: newer build $$NEWER_BUILD for main already exists, it will deploy the latest commit instead."
