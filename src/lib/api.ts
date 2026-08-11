@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 export type PostStatus = "draft" | "published";
 
 export type Post = {
@@ -49,60 +51,6 @@ export function getPostStatusBadgeLabel(
 }
 
 export type TagCount = { tag: string; count: number };
-
-export const DATA_CATEGORIES = [
-  "SQL",
-  "Python",
-  "Statistics",
-  "Tableau",
-  "PowerBI",
-] as const;
-
-export const DEV_CATEGORIES: readonly string[] = [];
-
-export const LIFE_CATEGORIES = ["Travel", "Career"] as const;
-
-export const ALL_CATEGORIES = [
-  ...DATA_CATEGORIES,
-  ...DEV_CATEGORIES,
-  "Projects",
-  ...LIFE_CATEGORIES,
-] as const;
-
-export const LATEST_CATEGORIES: readonly string[] = ALL_CATEGORIES.filter(
-  (c) => !(LIFE_CATEGORIES as readonly string[]).includes(c),
-);
-
-export function categorySection(category: string): { label: string; href: string } {
-  if ((LIFE_CATEGORIES as readonly string[]).includes(category)) {
-    return { label: "Life", href: "/life" };
-  }
-  if ((DATA_CATEGORIES as readonly string[]).includes(category)) {
-    return { label: "Data", href: "/data" };
-  }
-  if ((DEV_CATEGORIES as readonly string[]).includes(category)) {
-    return { label: "Dev", href: "/dev" };
-  }
-  return { label: "Latest", href: "/" };
-}
-
-export function sectionCategories(category: string): readonly string[] {
-  if ((LIFE_CATEGORIES as readonly string[]).includes(category)) {
-    return LIFE_CATEGORIES;
-  }
-  if ((DATA_CATEGORIES as readonly string[]).includes(category)) {
-    return DATA_CATEGORIES;
-  }
-  if ((DEV_CATEGORIES as readonly string[]).includes(category)) {
-    return DEV_CATEGORIES;
-  }
-  return ALL_CATEGORIES.filter(
-    (c) =>
-      !(DATA_CATEGORIES as readonly string[]).includes(c) &&
-      !(DEV_CATEGORIES as readonly string[]).includes(c) &&
-      !(LIFE_CATEGORIES as readonly string[]).includes(c),
-  );
-}
 
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -193,6 +141,33 @@ export async function getTags(categories?: readonly string[]): Promise<TagCount[
     throw new Error(await parseErrorMessage(response, "Failed to load tags"));
   }
   return response.json();
+}
+
+export type Category = {
+  id: string;
+  name: string;
+  section: "data" | "dev" | "life" | null;
+  sortOrder: number;
+  postCount: number;
+};
+
+export const getCategories = cache(async (): Promise<Category[]> => {
+  const response = await serverFetch("/api/categories");
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Failed to load categories"));
+  }
+  return response.json();
+});
+
+export function categorySection(
+  categoryName: string,
+  categories: readonly Category[],
+): { label: string; href: string } {
+  const section = categories.find((c) => c.name === categoryName)?.section ?? null;
+  if (section === "life") return { label: "Life", href: "/life" };
+  if (section === "data") return { label: "Data", href: "/data" };
+  if (section === "dev") return { label: "Dev", href: "/dev" };
+  return { label: "Latest", href: "/" };
 }
 
 export async function getComments(postId: string): Promise<Comment[]> {
@@ -305,4 +280,48 @@ export async function uploadImage(file: File): Promise<{ url: string }> {
     throw new Error(await parseErrorMessage(response, "Failed to upload image"));
   }
   return response.json();
+}
+
+export async function fetchCategories(): Promise<Category[]> {
+  const response = await fetch("/api/categories");
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Failed to load categories"));
+  }
+  return response.json();
+}
+
+export type CreateCategoryInput = { name: string; section: "data" | "dev" | "life" | null };
+
+export async function createCategory(input: CreateCategoryInput): Promise<Category> {
+  const response = await fetch("/api/categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Failed to create category"));
+  }
+  return response.json();
+}
+
+export type UpdateCategoryInput = { name?: string; section?: "data" | "dev" | "life" | null };
+
+export async function updateCategory(id: string, input: UpdateCategoryInput): Promise<Category> {
+  const response = await fetch(`/api/categories/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Failed to update category"));
+  }
+  return response.json();
+}
+
+export async function deleteCategory(id: string, reassignTo?: string): Promise<void> {
+  const qs = reassignTo ? `?reassignTo=${reassignTo}` : "";
+  const response = await fetch(`/api/categories/${id}${qs}`, { method: "DELETE" });
+  if (!response.ok && response.status !== 204) {
+    throw new Error(await parseErrorMessage(response, "Failed to delete category"));
+  }
 }
