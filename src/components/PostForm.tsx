@@ -3,23 +3,24 @@
 import { useRef, useState } from "react";
 import type { ChangeEvent, ClipboardEvent, DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import {
-  createPost,
-  updatePost,
-  uploadImage,
-  ALL_CATEGORIES,
-} from "@/lib/api";
-import type { Post, PostStatus } from "@/lib/api";
+import { createPost, updatePost, uploadImage } from "@/lib/api";
+import type { Post, PostStatus, Category } from "@/lib/api";
 import styles from "./PostForm.module.css";
 import MarkdownEditor from "./MarkdownEditor";
 
-export default function PostForm({ initialPost }: { initialPost?: Post }) {
+export default function PostForm({
+  initialPost,
+  categories,
+}: {
+  initialPost?: Post;
+  categories: Category[];
+}) {
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [title, setTitle] = useState(initialPost?.title ?? "");
   const [subtitle, setSubtitle] = useState(initialPost?.subtitle ?? "");
-  const [category, setCategory] = useState(initialPost?.category ?? ALL_CATEGORIES[0]);
+  const [category, setCategory] = useState(initialPost?.category ?? categories[0]?.name ?? "");
   const [tagsText, setTagsText] = useState(initialPost?.tags.join(", ") ?? "");
   const [bodyMd, setBodyMd] = useState(initialPost?.bodyMd ?? "");
   const [isPublic, setIsPublic] = useState(initialPost?.isPublic ?? true);
@@ -189,9 +190,9 @@ export default function PostForm({ initialPost }: { initialPost?: Post }) {
           onChange={(e) => setCategory(e.target.value)}
           data-testid="post-category-select"
         >
-          {ALL_CATEGORIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
+          {categories.map((c) => (
+            <option key={c.id} value={c.name}>
+              {c.name}
             </option>
           ))}
         </select>
