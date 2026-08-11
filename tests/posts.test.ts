@@ -313,6 +313,22 @@ describe("POST /api/posts", () => {
     const titles = (await response.json()).map((p: { title: string }) => p.title);
     expect(titles).toEqual(["비공개글"]);
   });
+
+  it("returns 400 when category does not exist", async () => {
+    const response = await POST(
+      createRequest({
+        title: "존재하지 않는 카테고리",
+        bodyMd: "본문",
+        category: "NonexistentCategory12345",
+        tags: [],
+        status: "draft",
+      }),
+    );
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(typeof body.error).toBe("string");
+    expect(body.error).toBe("Category not found");
+  });
 });
 
 describe("PUT /api/posts/{id}", () => {
@@ -460,6 +476,38 @@ describe("PUT /api/posts/{id}", () => {
       params(postId),
     );
     expect((await update.json()).subtitle).toBe("수정된 부제");
+  });
+
+  it("returns 400 when category does not exist", async () => {
+    const create = await POST(
+      createRequest({
+        title: "원제목",
+        bodyMd: "원본",
+        category: "SQL",
+        tags: [],
+        status: "draft",
+      }),
+    );
+    const postId = (await create.json()).id;
+
+    const update = await PUT(
+      new NextRequest("http://localhost", {
+        method: "PUT",
+        body: JSON.stringify({
+          title: "원제목",
+          bodyMd: "원본",
+          category: "NonexistentCategory12345",
+          tags: [],
+          status: "draft",
+        }),
+        headers: { "Content-Type": "application/json", Cookie: adminCookieHeader() },
+      }),
+      params(postId),
+    );
+    expect(update.status).toBe(400);
+    const body = await update.json();
+    expect(typeof body.error).toBe("string");
+    expect(body.error).toBe("Category not found");
   });
 });
 
