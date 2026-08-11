@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   fetchCategories,
@@ -43,10 +43,6 @@ export default function CategoryManager() {
     }
   }
 
-  useEffect(() => {
-    if (open) load();
-  }, [open]);
-
   function openModal() {
     setOpen(true);
     setRenamingId(null);
@@ -54,6 +50,7 @@ export default function CategoryManager() {
     setNewName("");
     setNewSection("");
     setError(null);
+    load();
   }
 
   async function handleAdd() {
