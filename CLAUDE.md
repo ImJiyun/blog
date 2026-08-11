@@ -60,3 +60,20 @@ Key decisions worth knowing before touching this code:
 - Keep phases isolated. Resist adding "just one column" for a future phase before that
   phase has its own spec — it's cheap to add later and it clutters the current schema's
   intent.
+
+### Git / GitHub conventions
+
+- Branch name: `type/이슈번호-slug` (e.g. `fix/142-cloudbuild-deploy-race-guard`). One
+  GitHub issue = one branch = one PR — always push a PR, never merge locally.
+- Commit messages: English, no `Co-Authored-By` / "Generated with Claude" attribution —
+  commits should read as authored solely by the user.
+- PR title: English, written like a commit subject (e.g. `fix: guard against stale
+  deploy overwriting newer commit on concurrent builds (#142)`). This matters even
+  under "Rebase and merge" (doesn't literally reuse the title as the commit message the
+  way squash does, but keep it consistent with the log regardless).
+- PR body: Korean, terse 개조식 endings (-함/-임/-됨, noun phrases) — not polite
+  -요/-습니다 sentences. Include `Closes #N` (triggers auto-close on merge).
+- Merge strategy: **Rebase and merge** — never squash, never a plain merge commit.
+- The user runs `git commit`/`git push` themselves by default — prepare/stage changes
+  and explain what's ready, don't commit unprompted, unless explicitly asked to handle
+  the full commit/PR/merge flow in that moment (as opposed to the default).
