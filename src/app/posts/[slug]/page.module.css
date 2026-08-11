@@ -57,6 +57,10 @@
   align-items: start;
 }
 
+.layoutNoToc {
+  grid-template-columns: 1fr;
+}
+
 .article {
   min-width: 0;
 }
