@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
 import { extractFirstImageUrl, computeReadMinutes } from "@/lib/content";
-import { sectionCategories } from "@/lib/api";
+import { serializePost } from "@/lib/posts";
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(request: NextRequest, { params }: Params) {
   const { id: slug } = await params;
-  const post = await prisma.post.findUnique({ where: { slug } });
+  const post = await prisma.post.findUnique({ where: { slug }, include: { category: true } });
   if (!post) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
@@ -18,12 +19,12 @@ export async function GET(request: NextRequest, { params }: Params) {
 
   const neighbors = await prisma.post.findMany({
     where: {
-      category: { in: [...sectionCategories(post.category)] },
+      category: { section: post.category.section },
       status: "published",
       isPublic: true,
     },
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-    select: { id: true, slug: true, title: true, category: true, tags: true, publishedAt: true },
+    select: { id: true, slug: true, title: true, categoryId: true, tags: true, publishedAt: true },
   });
   const idx = neighbors.findIndex((n) => n.id === post.id);
   const prevPost = idx > 0 ? { slug: neighbors[idx - 1].slug, title: neighbors[idx - 1].title } : null;
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest, { params }: Params) {
     .map((n) => ({
       neighbor: n,
       score:
-        (n.category === post.category ? 2 : 0) +
+        (n.categoryId === post.categoryId ? 2 : 0) +
         new Set(n.tags.filter((tag) => post.tags.includes(tag))).size,
     }))
     .filter(({ score }) => score > 0)
@@ -61,7 +62,7 @@ export async function GET(request: NextRequest, { params }: Params) {
   ]);
 
   return NextResponse.json({
-    ...post,
+    ...serializePost(post),
     prevPost,
     nextPost,
     relatedPosts,
@@ -81,23 +82,31 @@ export async function PUT(request: NextRequest, { params }: Params) {
   }
   const body = await request.json();
   const wasPublished = existing.status === "published";
-  const post = await prisma.post.update({
-    where: { id },
-    data: {
-      title: body.title,
-      bodyMd: body.bodyMd,
-      category: body.category,
-      tags: body.tags ?? [],
-      subtitle: body.subtitle ?? null,
-      status: body.status,
-      isPublic: body.isPublic ?? existing.isPublic,
-      thumbnailUrl: extractFirstImageUrl(body.bodyMd),
-      readMinutes: computeReadMinutes(body.bodyMd),
-      publishedAt:
-        body.status === "published" && !wasPublished ? new Date() : existing.publishedAt,
-    },
-  });
-  return NextResponse.json(post);
+  try {
+    const post = await prisma.post.update({
+      where: { id },
+      data: {
+        title: body.title,
+        bodyMd: body.bodyMd,
+        category: { connect: { name: body.category } },
+        tags: body.tags ?? [],
+        subtitle: body.subtitle ?? null,
+        status: body.status,
+        isPublic: body.isPublic ?? existing.isPublic,
+        thumbnailUrl: extractFirstImageUrl(body.bodyMd),
+        readMinutes: computeReadMinutes(body.bodyMd),
+        publishedAt:
+          body.status === "published" && !wasPublished ? new Date() : existing.publishedAt,
+      },
+      include: { category: true },
+    });
+    return NextResponse.json(serializePost(post));
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+      return NextResponse.json({ error: "Category not found" }, { status: 400 });
+    }
+    throw err;
+  }
 }
 
 export async function DELETE(request: NextRequest, { params }: Params) {

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
 import { slugify } from "@/lib/slugify";
 import { extractFirstImageUrl, computeReadMinutes } from "@/lib/content";
+import { serializePost } from "@/lib/posts";
 
 async function uniqueSlug(title: string): Promise<string> {
   const base = slugify(title);
@@ -28,7 +30,7 @@ export async function GET(request: NextRequest) {
     where: {
       status,
       ...(admin ? {} : { isPublic: true }),
-      ...(category ? { category } : {}),
+      ...(category ? { category: { name: category } } : {}),
       ...(tag ? { tags: { has: tag } } : {}),
       ...(q
         ? {
@@ -40,8 +42,9 @@ export async function GET(request: NextRequest) {
         : {}),
     },
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+    include: { category: true },
   });
-  return NextResponse.json(posts);
+  return NextResponse.json(posts.map(serializePost));
 }
 
 export async function POST(request: NextRequest) {
@@ -50,20 +53,28 @@ export async function POST(request: NextRequest) {
   }
   const body = await request.json();
   const slug = await uniqueSlug(body.title);
-  const post = await prisma.post.create({
-    data: {
-      title: body.title,
-      slug,
-      bodyMd: body.bodyMd,
-      category: body.category,
-      tags: body.tags ?? [],
-      subtitle: body.subtitle ?? null,
-      status: body.status ?? "draft",
-      isPublic: body.isPublic ?? true,
-      thumbnailUrl: extractFirstImageUrl(body.bodyMd),
-      readMinutes: computeReadMinutes(body.bodyMd),
-      publishedAt: body.status === "published" ? new Date() : null,
-    },
-  });
-  return NextResponse.json(post, { status: 201 });
+  try {
+    const post = await prisma.post.create({
+      data: {
+        title: body.title,
+        slug,
+        bodyMd: body.bodyMd,
+        category: { connect: { name: body.category } },
+        tags: body.tags ?? [],
+        subtitle: body.subtitle ?? null,
+        status: body.status ?? "draft",
+        isPublic: body.isPublic ?? true,
+        thumbnailUrl: extractFirstImageUrl(body.bodyMd),
+        readMinutes: computeReadMinutes(body.bodyMd),
+        publishedAt: body.status === "published" ? new Date() : null,
+      },
+      include: { category: true },
+    });
+    return NextResponse.json(serializePost(post), { status: 201 });
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+      return NextResponse.json({ error: "Category not found" }, { status: 400 });
+    }
+    throw err;
+  }
 }

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     where: {
       status: "published",
       ...(isAdmin(request) ? {} : { isPublic: true }),
-      ...(categories ? { category: { in: categories } } : {}),
+      ...(categories ? { category: { name: { in: categories } } } : {}),
     },
     select: { tags: true },
   });
