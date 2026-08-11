@@ -1,11 +1,10 @@
 import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
-import { getViewablePosts, getTags, LIFE_CATEGORIES } from "@/lib/api";
+import { getViewablePosts, getTags, getCategories } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 
 type SearchParams = { category?: string; tag?: string; q?: string };
-const ALLOWED: readonly string[] = LIFE_CATEGORIES;
 
 export default async function LifePage({
   searchParams,
@@ -13,16 +12,18 @@ export default async function LifePage({
   searchParams: Promise<SearchParams>;
 }) {
   const { category, tag, q } = await searchParams;
-  const effectiveCategory = category && ALLOWED.includes(category) ? category : undefined;
   const isAdmin = await isAdminFromCookies();
+  const categories = await getCategories();
+  const allowed = categories.filter((c) => c.section === "life").map((c) => c.name);
+  const effectiveCategory = category && allowed.includes(category) ? category : undefined;
 
   const [posts, tags] = await Promise.all([
     getViewablePosts({ category: effectiveCategory, tag, q }, isAdmin),
-    getTags(LIFE_CATEGORIES),
+    getTags(allowed),
   ]);
   const filtered = effectiveCategory
     ? posts
-    : posts.filter((post) => ALLOWED.includes(post.category));
+    : posts.filter((post) => allowed.includes(post.category));
 
   return (
     <main>

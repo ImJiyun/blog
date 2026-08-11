@@ -1,15 +1,11 @@
 import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
-import { getViewablePosts, getTags, LATEST_CATEGORIES, LIFE_CATEGORIES } from "@/lib/api";
+import { getViewablePosts, getTags, getCategories } from "@/lib/api";
 import type { Post } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 
 type SearchParams = { tag?: string };
-
-function isLifeCategory(category: string): boolean {
-  return (LIFE_CATEGORIES as readonly string[]).includes(category);
-}
 
 export default async function HomePage({
   searchParams,
@@ -18,12 +14,14 @@ export default async function HomePage({
 }) {
   const { tag } = await searchParams;
   const isAdmin = await isAdminFromCookies();
+  const categories = await getCategories();
+  const latestCategoryNames = categories.filter((c) => c.section !== "life").map((c) => c.name);
 
   const [posts, tags] = await Promise.all([
     getViewablePosts({ tag }, isAdmin),
-    getTags(LATEST_CATEGORIES),
+    getTags(latestCategoryNames),
   ]);
-  const latest: Post[] = posts.filter((post) => !isLifeCategory(post.category));
+  const latest: Post[] = posts.filter((post) => latestCategoryNames.includes(post.category));
 
   return (
     <main>
