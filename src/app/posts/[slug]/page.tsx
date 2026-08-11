@@ -105,7 +105,11 @@ export default async function PostDetailPage({
             likes, and comments are content, not nav/footer, unlike the page
             header above this point). */}
         <div id="article-body" className={styles.contentStack}>
-          <div className={styles.layout}>
+          <div
+            className={[styles.layout, headings.length === 0 && styles.layoutNoToc]
+              .filter(Boolean)
+              .join(" ")}
+          >
             <article className={styles.article}>
               <MarkdownBody bodyMd={post.bodyMd} />
             </article>
