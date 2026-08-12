@@ -22,7 +22,7 @@ test.describe("admin FAB", () => {
       await expect(page.getByTestId(FAB)).toBeVisible();
     }
 
-    await page.goto("/admin/posts");
+    await page.goto("/admin/posts/new");
     await expect(page.getByTestId(FAB)).not.toBeVisible();
   });
 

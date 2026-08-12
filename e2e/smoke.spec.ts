@@ -6,9 +6,9 @@ const POST_TITLE = `Playwright Smoke Post ${Date.now()}`;
 test.describe.serial("golden path: write, publish, list, comment, like", () => {
   test("admin logs in and publishes a post", async ({ page }) => {
     await loginAsAdmin(page);
-    await page.goto("/admin/posts");
+    await page.goto("/");
 
-    await page.getByTestId("new-post-link").click();
+    await page.getByTestId("admin-fab-new-post").click();
     await expect(page).toHaveURL(/\/admin\/posts\/new$/);
 
     await page.getByTestId("post-title-input").fill(POST_TITLE);
@@ -20,14 +20,15 @@ test.describe.serial("golden path: write, publish, list, comment, like", () => {
       .fill("## Intro\n\nThis post was published by the Playwright smoke test.");
     await page.getByTestId("publish-button").click();
 
-    await expect(page).toHaveURL(/\/admin\/posts$/);
+    await expect(page).toHaveURL(/\/posts\/[^/]+$/);
     await expect(page.getByText(POST_TITLE)).toBeVisible();
   });
 
   test("the subtitle round-trips through the edit form", async ({ page }) => {
     await loginAsAdmin(page);
-    await page.goto("/admin/posts");
-    await page.getByText(POST_TITLE).click();
+    await page.goto("/");
+    await page.getByTestId("post-card").filter({ hasText: POST_TITLE }).click();
+    await page.getByRole("link", { name: "수정" }).click();
     await expect(page.getByTestId("post-subtitle-input")).toHaveValue(
       "스모크 테스트용 부제입니다",
     );
