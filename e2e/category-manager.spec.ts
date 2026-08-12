@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin } from "./support/auth";
+import { deletePostIfExists, expectPostGone } from "./support/posts";
 
 test.describe("category manager", () => {
   test("add, use in a post, rename, and delete with reassignment", async ({ page }) => {
@@ -34,7 +35,7 @@ test.describe("category manager", () => {
         .selectOption({ label: categoryName });
       await page.getByTestId("post-body-textarea").fill("본문 내용");
       await page.getByTestId("save-draft-button").click();
-      await expect(page).toHaveURL(/\/admin\/posts$/);
+      await expect(page).toHaveURL(/\/posts\/[^/]+$/);
 
       // Rename it — the already-created post should reflect the new name.
       await page.goto("/");
@@ -48,13 +49,11 @@ test.describe("category manager", () => {
       ).toBeVisible();
       await page.getByTestId("category-manager-close").click();
 
-      // Admin's post list only links to the edit page (no public-view link
-      // for drafts), so follow that link rather than the ambiguous row click
-      // the design draft assumed — and check the category select's value
-      // rather than /posts/[slug], which a draft wouldn't resolve to anyway.
-      await page.goto("/admin/posts");
-      const postRow = page.getByTestId("admin-post-row").filter({ hasText: postTitle });
-      await postRow.getByRole("link", { name: "Edit" }).click();
+      // The draft shows on home too (admin sees drafts via getViewablePosts)
+      // — open it and follow the detail page's edit link.
+      await page.goto("/");
+      await page.getByTestId("post-card").filter({ hasText: postTitle }).click();
+      await page.getByRole("link", { name: "수정" }).click();
       await expect(page).toHaveURL(/\/admin\/posts\/[^/]+\/edit$/);
       await expect(page.getByTestId("post-category-select")).toHaveValue(renamedName);
 
@@ -74,13 +73,7 @@ test.describe("category manager", () => {
     } finally {
       // Best-effort post cleanup: delete the test post if it still exists.
       try {
-        await page.goto("/admin/posts");
-        const row = page.getByTestId("admin-post-row").filter({ hasText: postTitle });
-        if (await row.isVisible().catch(() => false)) {
-          page.once("dialog", (dialog) => dialog.accept());
-          await row.getByTestId("delete-post-button").click();
-          await expect(row).toHaveCount(0);
-        }
+        await deletePostIfExists(page, postTitle);
       } catch {
         // best effort — verified below, outside the finally block
       }
@@ -117,8 +110,7 @@ test.describe("category manager", () => {
       }
     }
 
-    await page.goto("/admin/posts");
-    await expect(page.getByTestId("admin-post-row").filter({ hasText: postTitle })).toHaveCount(0);
+    await expectPostGone(page, postTitle);
 
     await page.goto("/");
     await page.getByTestId("category-manager-button").click();

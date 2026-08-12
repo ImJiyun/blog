@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin } from "./support/auth";
+import { deletePostIfExists, expectPostGone } from "./support/posts";
 
 test.describe("post status badge", () => {
   test("shows 임시저장 for a draft and 비공개 for a private published post", async ({ page }) => {
@@ -17,10 +18,9 @@ test.describe("post status badge", () => {
     // The draft above is already committed to the DB, so everything from
     // here on — including the private post's own creation flow — must be
     // guarded by try/finally, or a failure partway through leaks the draft
-    // (and/or the private post) permanently. See admin-draft-visibility.spec.ts
-    // for the same pattern.
+    // (and/or the private post) permanently.
     try {
-      await expect(page).toHaveURL(/\/admin\/posts$/);
+      await expect(page).toHaveURL(/\/posts\/[^/]+$/);
 
       await page.goto("/admin/posts/new");
       await page.getByTestId("post-title-input").fill(privateTitle);
@@ -28,7 +28,7 @@ test.describe("post status badge", () => {
       await page.getByTestId("post-body-textarea").fill("## Private\n\nBadge test.");
       await page.getByTestId("post-public-toggle").click();
       await page.getByTestId("publish-button").click();
-      await expect(page).toHaveURL(/\/admin\/posts$/);
+      await expect(page).toHaveURL(/\/posts\/[^/]+$/);
 
       await page.goto("/");
 
@@ -53,31 +53,14 @@ test.describe("post status badge", () => {
       // Clean up the draft post. Isolated in its own try/catch so a failure
       // here can never prevent the private-post cleanup below from running.
       try {
-        await page.goto("/admin/posts");
-        const draftRow = page.getByTestId("admin-post-row").filter({ hasText: draftTitle });
-        if (await draftRow.isVisible().catch(() => false)) {
-          page.once("dialog", (dialog) => dialog.accept());
-          await draftRow.getByTestId("delete-post-button").click();
-          // Wait for the row to disappear from this same page (the delete
-          // button's onSuccess triggers an in-place router.refresh()) before
-          // navigating anywhere else. Without this, a later goto can race
-          // the still-in-flight DELETE request and read stale data — the
-          // navigation itself can even abort the request client-side.
-          await expect(draftRow).toHaveCount(0);
-        }
+        await deletePostIfExists(page, draftTitle);
       } catch {
         // best effort — verified below, outside the finally block
       }
 
       // Clean up the private post
       try {
-        await page.goto("/admin/posts");
-        const privateRow = page.getByTestId("admin-post-row").filter({ hasText: privateTitle });
-        if (await privateRow.isVisible().catch(() => false)) {
-          page.once("dialog", (dialog) => dialog.accept());
-          await privateRow.getByTestId("delete-post-button").click();
-          await expect(privateRow).toHaveCount(0);
-        }
+        await deletePostIfExists(page, privateTitle);
       } catch {
         // best effort — verified below, outside the finally block
       }
@@ -86,8 +69,7 @@ test.describe("post status badge", () => {
     // Confirm the deletes actually took effect, rather than just trusting
     // the clicks succeeded. Done outside finally so a failure here surfaces
     // as the test's real failure instead of masking one thrown above.
-    await page.goto("/admin/posts");
-    await expect(page.getByTestId("admin-post-row").filter({ hasText: draftTitle })).toHaveCount(0);
-    await expect(page.getByTestId("admin-post-row").filter({ hasText: privateTitle })).toHaveCount(0);
+    await expectPostGone(page, draftTitle);
+    await expectPostGone(page, privateTitle);
   });
 });
