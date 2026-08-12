@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin } from "./support/auth";
+import { deletePostIfExists, expectPostGone } from "./support/posts";
 
 test.describe("post detail date for drafts", () => {
   test("a draft's detail page shows a date to the admin instead of a blank meta line", async ({
@@ -18,10 +19,6 @@ test.describe("post detail date for drafts", () => {
     // here on must be guarded by try/finally, or a failure partway through
     // leaks the draft permanently — same pattern as post-status-badge.spec.ts.
     try {
-      await expect(page).toHaveURL(/\/admin\/posts$/);
-
-      await page.goto("/");
-      await page.getByTestId("post-card").filter({ hasText: title }).click();
       await expect(page).toHaveURL(/\/posts\/[^/]+$/);
 
       // publishedAt is null for a draft — the meta date must fall back to
@@ -31,19 +28,12 @@ test.describe("post detail date for drafts", () => {
       expect(dateText.trim()).toMatch(/^\d{4}\.\d{2}\.\d{2}$/);
     } finally {
       try {
-        await page.goto("/admin/posts");
-        const row = page.getByTestId("admin-post-row").filter({ hasText: title });
-        if (await row.isVisible().catch(() => false)) {
-          page.once("dialog", (dialog) => dialog.accept());
-          await row.getByTestId("delete-post-button").click();
-          await expect(row).toHaveCount(0);
-        }
+        await deletePostIfExists(page, title);
       } catch {
         // best effort — verified below, outside the finally block
       }
     }
 
-    await page.goto("/admin/posts");
-    await expect(page.getByTestId("admin-post-row").filter({ hasText: title })).toHaveCount(0);
+    await expectPostGone(page, title);
   });
 });

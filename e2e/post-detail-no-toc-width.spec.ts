@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin } from "./support/auth";
+import { deletePostIfExists, expectPostGone } from "./support/posts";
 
 test.describe("post detail layout without a table of contents", () => {
   test("article fills the full content width when the post has no H2/H3 headings", async ({
@@ -18,10 +19,6 @@ test.describe("post detail layout without a table of contents", () => {
     await page.getByTestId("save-draft-button").click();
 
     try {
-      await expect(page).toHaveURL(/\/admin\/posts$/);
-
-      await page.goto("/");
-      await page.getByTestId("post-card").filter({ hasText: title }).click();
       await expect(page).toHaveURL(/\/posts\/[^/]+$/);
 
       await expect(page.getByTestId("toc")).toHaveCount(0);
@@ -34,19 +31,12 @@ test.describe("post detail layout without a table of contents", () => {
       expect(articleBox!.width).toBeGreaterThan(700);
     } finally {
       try {
-        await page.goto("/admin/posts");
-        const row = page.getByTestId("admin-post-row").filter({ hasText: title });
-        if (await row.isVisible().catch(() => false)) {
-          page.once("dialog", (dialog) => dialog.accept());
-          await row.getByTestId("delete-post-button").click();
-          await expect(row).toHaveCount(0);
-        }
+        await deletePostIfExists(page, title);
       } catch {
         // best effort — verified below, outside the finally block
       }
     }
 
-    await page.goto("/admin/posts");
-    await expect(page.getByTestId("admin-post-row").filter({ hasText: title })).toHaveCount(0);
+    await expectPostGone(page, title);
   });
 });
