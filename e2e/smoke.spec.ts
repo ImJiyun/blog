@@ -32,6 +32,12 @@ test.describe.serial("golden path: write, publish, list, comment, like", () => {
     await expect(page.getByTestId("post-subtitle-input")).toHaveValue(
       "스모크 테스트용 부제입니다",
     );
+
+    // cancelling out of the edit form should redirect back to the same
+    // post's detail page (not /posts/undefined — this would still match the
+    // URL regex below if the PUT response ever stopped returning a slug).
+    await page.getByTestId("cancel-button").click();
+    await expect(page).toHaveURL(/\/posts\/[^/]+$/);
   });
 
   test("the detail page shows the redesigned layout", async ({ page }) => {
