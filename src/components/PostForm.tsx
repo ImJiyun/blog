@@ -144,12 +144,10 @@ export default function PostForm({
         status,
         isPublic,
       };
-      if (initialPost) {
-        await updatePost(initialPost.id, input);
-      } else {
-        await createPost(input);
-      }
-      router.push("/admin/posts");
+      const post = initialPost
+        ? await updatePost(initialPost.id, input)
+        : await createPost(input);
+      router.push(`/posts/${post.slug}`);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save post.");
@@ -252,7 +250,7 @@ export default function PostForm({
       <div className={styles.actions}>
         <button
           type="button"
-          onClick={() => router.push("/admin/posts")}
+          onClick={() => router.push(initialPost ? `/posts/${initialPost.slug}` : "/")}
           disabled={saving}
           data-testid="cancel-button"
         >
