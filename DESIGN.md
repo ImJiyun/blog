@@ -99,12 +99,10 @@ Dark mode follows OS preference (`prefers-color-scheme`), with `[data-theme="dar
   button is a dot-indicator pill (no count — the API only returns `{ liked: boolean }`).
   Thin `--accent` scroll-progress bar fixed to viewport top, scaled to the article
   element's own scroll range (not the whole page).
-- **Admin** (a keyboard-shortcut login modal, `/admin/posts`, editor): same wordmark/pill
-  language as the public site — bordered `--card-bg` cards for the login modal and the
-  post editor, a `--radius-sm` bordered table for the post list with `--radius-pill`
-  action buttons,
-  and an inverted (`--ink` background) pill for the primary action (Log in / Publish /
-  + New Post).
+- **Admin** (a keyboard-shortcut login modal, post editor): same wordmark/pill language
+  as the public site — bordered `--card-bg` cards for the login modal and the post
+  editor, and an inverted (`--ink` background) pill for the primary action (Log in /
+  Publish).
 
 ## Known follow-up (not urgent)
 
