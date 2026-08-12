@@ -23,16 +23,39 @@ function makePost(overrides: Partial<Post>): Post {
 }
 
 describe("mergePublishedAndDrafts", () => {
-  it("merges both lists and sorts by createdAt descending", () => {
+  it("sorts published posts by publishedAt descending, matching the public API order", () => {
+    // Created earlier but published later — should still rank above a post
+    // that was both created and published earlier, matching /api/posts'
+    // `publishedAt desc, createdAt desc` order.
+    const heldAsDraftThenPublishedLate = makePost({
+      id: "1",
+      createdAt: "2026-01-01T00:00:00.000Z",
+      publishedAt: "2026-01-20T00:00:00.000Z",
+    });
+    const publishedImmediately = makePost({
+      id: "2",
+      createdAt: "2026-01-10T00:00:00.000Z",
+      publishedAt: "2026-01-10T00:00:00.000Z",
+    });
+
+    const result = mergePublishedAndDrafts(
+      [heldAsDraftThenPublishedLate, publishedImmediately],
+      [],
+    );
+
+    expect(result.map((p) => p.id)).toEqual(["1", "2"]);
+  });
+
+  it("falls back to createdAt for drafts, which have no publishedAt yet", () => {
     const older = makePost({ id: "1", createdAt: "2026-01-01T00:00:00.000Z" });
-    const newer = makePost({
+    const newerDraft = makePost({
       id: "2",
       createdAt: "2026-03-01T00:00:00.000Z",
       status: "draft",
       publishedAt: null,
     });
 
-    const result = mergePublishedAndDrafts([older], [newer]);
+    const result = mergePublishedAndDrafts([older], [newerDraft]);
 
     expect(result.map((p) => p.id)).toEqual(["2", "1"]);
   });
