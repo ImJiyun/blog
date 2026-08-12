@@ -100,9 +100,8 @@ export async function getPosts(params: GetPostsParams = {}): Promise<Post[]> {
 }
 
 export function mergePublishedAndDrafts(published: Post[], drafts: Post[]): Post[] {
-  return [...drafts, ...published].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  );
+  const sortKey = (post: Post) => new Date(post.publishedAt ?? post.createdAt).getTime();
+  return [...drafts, ...published].sort((a, b) => sortKey(b) - sortKey(a));
 }
 
 export async function getViewablePosts(
