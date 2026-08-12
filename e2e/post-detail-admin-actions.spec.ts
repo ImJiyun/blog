@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin } from "./support/auth";
+import { deletePostIfExists } from "./support/posts";
 
 test.describe("post detail admin actions", () => {
   test("is hidden for a signed-out visitor", async ({ page }) => {
@@ -26,8 +27,8 @@ test.describe("post detail admin actions", () => {
     // card on the homepage" — that shared-state pattern raced with other
     // specs (e.g. smoke.spec.ts) that also publish/look up their own post
     // under parallel workers.
-    await page.goto("/admin/posts");
-    await page.getByTestId("new-post-link").click();
+    await page.goto("/");
+    await page.getByTestId("admin-fab-new-post").click();
     await expect(page).toHaveURL(/\/admin\/posts\/new$/);
     await page.getByTestId("post-title-input").fill(title);
     await page.getByTestId("post-subtitle-input").fill("Delete test subtitle");
@@ -35,30 +36,23 @@ test.describe("post detail admin actions", () => {
     await page.getByTestId("post-tags-input").fill("test");
     await page.getByTestId("post-body-textarea").fill("Delete test body.");
     await page.getByTestId("publish-button").click();
-    await expect(page).toHaveURL(/\/admin\/posts$/);
+    await expect(page).toHaveURL(/\/posts\/[^/]+$/);
     await expect(page.getByText(title)).toBeVisible();
 
-    // If any assertion below fails before the delete button is clicked, the
-    // post created above would otherwise leak into the DB permanently (the
-    // exact kind of cross-spec pollution bbba0cc fixed elsewhere) — clean it
-    // up via the admin list as a fallback whenever the primary flow didn't
-    // already delete it.
+    // If the delete click below fails, the post created above would
+    // otherwise leak into the DB permanently — clean it up as a fallback
+    // whenever the primary flow didn't already delete it.
     try {
-      await page.goto("/posts");
-      await page.getByText(title).click();
-      await expect(page).toHaveURL(/\/posts\//);
-
       page.once("dialog", (dialog) => dialog.accept());
       await page.getByTestId("post-detail-delete-button").click();
 
       await expect(page).toHaveURL(/\/$/);
       await expect(page.getByText(title)).not.toBeVisible();
     } finally {
-      await page.goto("/admin/posts");
-      const row = page.getByTestId("admin-post-row").filter({ hasText: title });
-      if (await row.isVisible().catch(() => false)) {
-        page.once("dialog", (dialog) => dialog.accept());
-        await row.getByTestId("delete-post-button").click();
+      try {
+        await deletePostIfExists(page, title);
+      } catch {
+        // best effort — the assertions above already caught the real failure
       }
     }
   });
