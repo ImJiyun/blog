@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin } from "./support/auth";
+import { deletePostIfExists, expectPostGone } from "./support/posts";
 
 test.describe("code block and inline code accent highlighting", () => {
   test("fenced block extends accent to function titles, inline code highlights exact keywords only", async ({
@@ -27,10 +28,6 @@ test.describe("code block and inline code accent highlighting", () => {
     await page.getByTestId("save-draft-button").click();
 
     try {
-      await expect(page).toHaveURL(/\/admin\/posts$/);
-
-      await page.goto("/");
-      await page.getByTestId("post-card").filter({ hasText: title }).click();
       await expect(page).toHaveURL(/\/posts\/[^/]+$/);
 
       const article = page.locator("article");
@@ -83,19 +80,12 @@ test.describe("code block and inline code accent highlighting", () => {
       await expect(inlineNonKeyword.locator("span")).toHaveCount(0);
     } finally {
       try {
-        await page.goto("/admin/posts");
-        const row = page.getByTestId("admin-post-row").filter({ hasText: title });
-        if (await row.isVisible().catch(() => false)) {
-          page.once("dialog", (dialog) => dialog.accept());
-          await row.getByTestId("delete-post-button").click();
-          await expect(row).toHaveCount(0);
-        }
+        await deletePostIfExists(page, title);
       } catch {
         // best effort — verified below, outside the finally block
       }
     }
 
-    await page.goto("/admin/posts");
-    await expect(page.getByTestId("admin-post-row").filter({ hasText: title })).toHaveCount(0);
+    await expectPostGone(page, title);
   });
 });
