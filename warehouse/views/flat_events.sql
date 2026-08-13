@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW `${GCP_PROJECT_ID}.${GA4_DATASET_ID}.events_flat` AS
+CREATE OR REPLACE VIEW `${GCP_PROJECT_ID}.${GA4_DATASET_ID}.flat_events` AS
 SELECT
   PARSE_DATE('%Y%m%d', event_date) AS event_date,
   TIMESTAMP_MICROS(event_timestamp) AS event_timestamp,
@@ -7,6 +7,8 @@ SELECT
   device.category AS device_category,
   device.web_info.browser AS browser,
   geo.country AS country,
+  (SELECT ep.value.string_value FROM UNNEST(event_params) ep
+   WHERE ep.key = 'page_location') AS page_location,
   (SELECT ep.value.string_value FROM UNNEST(event_params) ep
    WHERE ep.key = 'page_path') AS page_path,
   event_params  -- kept intact; UNNEST per-query for custom params
