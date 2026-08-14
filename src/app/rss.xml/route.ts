@@ -29,6 +29,7 @@ export async function GET() {
     where: postVisibilityWhere(),
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
     include: { category: true },
+    take: 20,
   });
   const serialized = posts.map(serializePost);
 
