@@ -4,6 +4,7 @@ import { POST } from "@/app/api/posts/route";
 import { GET } from "@/app/rss.xml/route";
 import { resetDb } from "./helpers/db";
 import { adminCookieHeader } from "./helpers/auth";
+import { prisma } from "@/lib/prisma";
 
 beforeEach(resetDb);
 
@@ -103,5 +104,28 @@ describe("GET /rss.xml", () => {
     expect(response.headers.get("Content-Type")).toBe(
       "application/rss+xml; charset=utf-8",
     );
+  });
+
+  it("caps items at 20 even when more published public posts exist", async () => {
+    const category = await prisma.category.findFirstOrThrow({ where: { name: "SQL" } });
+    const now = Date.now();
+    await prisma.post.createMany({
+      data: Array.from({ length: 25 }, (_, i) => ({
+        title: `순위 글 ${i}`,
+        slug: `rank-post-${i}`,
+        bodyMd: "본문",
+        categoryId: category.id,
+        tags: [],
+        status: "published",
+        publishedAt: new Date(now - i * 1000),
+      })),
+    });
+
+    const response = await GET();
+    const xml = await response.text();
+
+    expect(xml.match(/<item>/g)?.length).toBe(20);
+    expect(xml).toContain("순위 글 0");
+    expect(xml).not.toContain("순위 글 24");
   });
 });
