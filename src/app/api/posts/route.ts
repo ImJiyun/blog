@@ -5,6 +5,7 @@ import { isAdmin } from "@/lib/auth";
 import { slugify } from "@/lib/slugify";
 import { extractFirstImageUrl, computeReadMinutes } from "@/lib/content";
 import { serializePost } from "@/lib/posts";
+import { postVisibilityWhere } from "@/lib/post-visibility";
 
 async function uniqueSlug(title: string): Promise<string> {
   const base = slugify(title);
@@ -28,8 +29,7 @@ export async function GET(request: NextRequest) {
 
   const posts = await prisma.post.findMany({
     where: {
-      status,
-      ...(admin ? {} : { isPublic: true }),
+      ...postVisibilityWhere({ status, isAdmin: admin }),
       ...(category ? { category: { name: category } } : {}),
       ...(tag ? { tags: { has: tag } } : {}),
       ...(q

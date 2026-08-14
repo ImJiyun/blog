@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
+import { postVisibilityWhere } from "@/lib/post-visibility";
 
 export async function GET(request: NextRequest) {
   const categoriesParam = request.nextUrl.searchParams.get("categories");
@@ -11,8 +12,7 @@ export async function GET(request: NextRequest) {
 
   const posts = await prisma.post.findMany({
     where: {
-      status: "published",
-      ...(isAdmin(request) ? {} : { isPublic: true }),
+      ...postVisibilityWhere({ isAdmin: isAdmin(request) }),
       ...(categories ? { category: { name: { in: categories } } } : {}),
     },
     select: { tags: true },

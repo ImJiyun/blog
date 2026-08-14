@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { serializePost } from "@/lib/posts";
 import { toExcerpt } from "@/lib/excerpt";
+import { postVisibilityWhere } from "@/lib/post-visibility";
 
 // Route has no Dynamic API usage (no `request` param, no cookies()/headers()),
 // so without this Next.js would try to statically render it at `next build`
@@ -25,7 +26,7 @@ function escapeXml(value: string): string {
 
 export async function GET() {
   const posts = await prisma.post.findMany({
-    where: { status: "published", isPublic: true },
+    where: postVisibilityWhere(),
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
     include: { category: true },
   });

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
 import { extractFirstImageUrl, computeReadMinutes } from "@/lib/content";
 import { serializePost } from "@/lib/posts";
+import { postVisibilityWhere } from "@/lib/post-visibility";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -20,8 +21,7 @@ export async function GET(request: NextRequest, { params }: Params) {
   const neighbors = await prisma.post.findMany({
     where: {
       category: { section: post.category.section },
-      status: "published",
-      isPublic: true,
+      ...postVisibilityWhere(),
     },
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
     select: { id: true, slug: true, title: true, categoryId: true, tags: true, publishedAt: true },
