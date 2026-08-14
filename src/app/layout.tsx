@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   title: "hanul.dev",
   description:
     "A personal blog whose own usage data feeds a BI/analytics practice.",
+  alternates: {
+    types: { "application/rss+xml": "/rss.xml" },
+  },
 };
 
 const themeInitScript = `
