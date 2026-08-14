@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPost, getComments, getCategories, categorySection, getPostStatusBadgeLabel } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 import { extractHeadings } from "@/lib/toc";
+import { buildPostMetadata } from "@/lib/postMetadata";
 import MarkdownBody from "@/components/MarkdownBody";
 import TableOfContents from "@/components/TableOfContents";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
@@ -22,6 +24,19 @@ function formatDate(iso: string | null): string {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(
     d.getDate(),
   ).padStart(2, "0")}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
+  if (!post) return {};
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  return buildPostMetadata(post, siteUrl);
 }
 
 export default async function PostDetailPage({
