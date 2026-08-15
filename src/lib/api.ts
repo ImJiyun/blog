@@ -131,6 +131,11 @@ export async function getPost(slug: string): Promise<PostDetail | null> {
 }
 
 export async function getTags(categories?: readonly string[]): Promise<TagCount[]> {
+  // `categories` provided but empty means "this section has no categories,
+  // so it can have no posts" — must return no tags, not fall through to the
+  // unfiltered (all-categories) request below.
+  if (categories && categories.length === 0) return [];
+
   const search = new URLSearchParams();
   if (categories?.length) search.set("categories", categories.join(","));
   const qs = search.toString();
