@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 import styles from "./ActiveCategoryNote.module.css";
 
 export default function ActiveCategoryNote({
@@ -22,7 +25,14 @@ export default function ActiveCategoryNote({
   return (
     <p className={styles.note}>
       <strong>{category}</strong>만 보는 중 ·{" "}
-      <Link href={`${basePath}${qs ? `?${qs}` : ""}`}>전체 보기</Link>
+      <Link
+        href={`${basePath}${qs ? `?${qs}` : ""}`}
+        onClick={() =>
+          trackEvent("click", { target_type: "category_reset", category })
+        }
+      >
+        전체 보기
+      </Link>
     </p>
   );
 }

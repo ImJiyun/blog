@@ -15,6 +15,7 @@ import PostAuthorCard from "@/components/PostAuthorCard";
 import RelatedPosts from "@/components/RelatedPosts";
 import PostPrevNextNav from "@/components/PostPrevNextNav";
 import PostTagLinks from "@/components/PostTagLinks";
+import CategoryLink from "@/components/CategoryLink";
 import PostDetailAdminActions from "@/components/PostDetailAdminActions";
 import styles from "./page.module.css";
 
@@ -89,7 +90,7 @@ export default async function PostDetailPage({
           )}
           <p className={styles.breadcrumb}>
             <Link href={sectionHref}>{sectionLabel}</Link>{" "}
-            / <Link href={categoryHref}>{post.category}</Link>
+            / <CategoryLink href={categoryHref} category={post.category}>{post.category}</CategoryLink>
           </p>
 
           {post.thumbnailUrl && (
