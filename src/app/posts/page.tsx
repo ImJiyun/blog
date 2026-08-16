@@ -1,6 +1,7 @@
 import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
+import ActiveCategoryNote from "@/components/ActiveCategoryNote";
 import { getViewablePosts, getTags } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 
@@ -16,7 +17,10 @@ export default async function PostsPage({
 
   const [posts, tags] = await Promise.all([
     getViewablePosts({ category, tag, q }, isAdmin),
-    getTags(),
+    // /posts has no section to pre-restrict categories by (unlike /data, /dev,
+    // /life), so scope tags to the active category filter itself when present
+    // — otherwise the chip list leaks tags from every other category (#163).
+    getTags(category ? [category] : undefined),
   ]);
 
   return (
@@ -27,6 +31,7 @@ export default async function PostsPage({
         </p>
       )}
 
+      <ActiveCategoryNote category={category} basePath="/posts" tag={tag} q={q} />
       <TagChips tags={tags} basePath="/posts" />
 
       {posts.length === 0 ? (
