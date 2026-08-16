@@ -64,6 +64,15 @@ export default async function PostDetailPage({
     getCategories(),
   ]);
 
+  const { href: sectionHref, label: sectionLabel } = categorySection(post.category, categories);
+  // categorySection() falls back to "/" (Latest) for categories with no section
+  // (e.g. Projects) — Latest doesn't accept a `category` filter, so route those
+  // through /posts?category= instead, matching content-platform-design.md.
+  const categoryHref =
+    sectionHref === "/"
+      ? `/posts?category=${encodeURIComponent(post.category)}`
+      : `${sectionHref}?category=${encodeURIComponent(post.category)}`;
+
   return (
     <>
       <ScrollProgressBar articleId="article-body" />
@@ -79,10 +88,8 @@ export default async function PostDetailPage({
             </span>
           )}
           <p className={styles.breadcrumb}>
-            <Link href={categorySection(post.category, categories).href}>
-              {categorySection(post.category, categories).label}
-            </Link>{" "}
-            / {post.category}
+            <Link href={sectionHref}>{sectionLabel}</Link>{" "}
+            / <Link href={categoryHref}>{post.category}</Link>
           </p>
 
           {post.thumbnailUrl && (
