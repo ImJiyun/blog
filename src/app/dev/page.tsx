@@ -1,6 +1,7 @@
 import PostCard from "@/components/PostCard";
 import PostGrid from "@/components/PostGrid";
 import TagChips from "@/components/TagChips";
+import ActiveCategoryNote from "@/components/ActiveCategoryNote";
 import { getViewablePosts, getTags, getCategories } from "@/lib/api";
 import { isAdminFromCookies } from "@/lib/auth";
 
@@ -27,6 +28,7 @@ export default async function DevPage({
 
   return (
     <main>
+      <ActiveCategoryNote category={effectiveCategory} basePath="/dev" tag={tag} q={q} />
       <TagChips tags={tags} basePath="/dev" />
       {filtered.length === 0 ? (
         <p style={{ textAlign: "center", padding: "3rem 1.5rem", color: "var(--ink-soft)" }}>
