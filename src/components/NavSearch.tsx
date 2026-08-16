@@ -48,6 +48,16 @@ export default function NavSearch() {
     }
     const next = new URLSearchParams(onPosts ? searchParams.toString() : "");
     if (v) {
+      // Deliberately drop category — this box is global "전체 글 검색"
+      // (search all posts), so a real query shouldn't silently narrow by
+      // whatever category link happens to be active (that produced
+      // contradictory copy: "OO만 보는 중" next to "... 검색결과 · 전체
+      // 글", #166). `tag` has no such conflicting copy and TagChips already
+      // preserves `q` when toggling a tag, so it's kept here for symmetry.
+      // Scoped to this branch (not run unconditionally) so submitting or
+      // clearing an already-empty box — a no-op — doesn't itself strip an
+      // active category filter with nothing to show for it.
+      next.delete("category");
       next.set("q", v);
     } else {
       next.delete("q");
