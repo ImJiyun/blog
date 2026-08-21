@@ -67,6 +67,7 @@ export default function AdminLoginShortcut({ isAdmin }: { isAdmin: boolean }) {
         <input
           type="password"
           placeholder="Password"
+          aria-label="Password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           autoFocus
