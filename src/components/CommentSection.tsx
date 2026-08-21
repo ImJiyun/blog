@@ -114,12 +114,14 @@ export default function CommentSection({ postId, postSlug, initialComments }: Pr
         <input
           type="text"
           placeholder="이름"
+          aria-label="이름"
           value={authorName}
           onChange={(e) => setAuthorName(e.target.value)}
           data-testid="comment-author-input"
         />
         <textarea
           placeholder="댓글을 남겨보세요"
+          aria-label="댓글 내용"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           rows={3}
